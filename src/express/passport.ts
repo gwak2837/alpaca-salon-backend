@@ -2,7 +2,6 @@ import querystring from 'querystring'
 
 import { Express } from 'express'
 import passport from 'passport'
-import { Strategy as FacebookStrategy } from 'passport-facebook'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 
 import { poolQuery } from '../database/postgres'
@@ -41,19 +40,6 @@ export function setPassportStrategies(app: Express) {
 
           done(null)
         }
-      }
-    )
-  )
-
-  passport.use(
-    new FacebookStrategy(
-      {
-        clientID: process.env.FACEBOOK_APP_ID ?? '',
-        clientSecret: process.env.FACEBOOK_APP_SECRET ?? '',
-        callbackURL: `${process.env.BACKEND_URL}/auth/facebook/callback`,
-      },
-      (accessToken, refreshToken, profile, cb) => {
-        console.log(profile)
       }
     )
   )
