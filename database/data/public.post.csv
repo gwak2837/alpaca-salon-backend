@@ -1,3 +1,3 @@
-id,creation_time,modification_time,title,contents,user_id
-1,2021-11-10 15:19:31.879569+09,2021-11-10 15:19:31.879569+09,232,asdfasdf\nasdfasdf\nasdfasdf,d4dbb193-389c-4c0d-b6b6-8adb9d279c5a
-2,2021-11-10 15:19:45.438574+09,2021-11-10 15:19:45.438574+09,title,sdfafd\nsdfsf\nff,d4dbb193-389c-4c0d-b6b6-8adb9d279c5a
+id,creation_time,modification_time,category,title,contents,user_id
+1,2021-11-10 15:19:31.879569+09,2021-11-10 15:19:31.879569+09,0,232,asdfasdf\nasdfasdf\nasdfasdf,d4dbb193-389c-4c0d-b6b6-8adb9d279c5a
+2,2021-11-10 15:19:45.438574+09,2021-11-10 15:19:45.438574+09,1,title,sdfafd\nsdfsf\nff,d4dbb193-389c-4c0d-b6b6-8adb9d279c5a

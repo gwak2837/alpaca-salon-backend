@@ -24,6 +24,7 @@ public_tables=(
   public.post
   public.comment
   public.hashtag
+  public.event
   public.user_x_liked_post
   public.user_x_liked_comment
   public.post_x_hashtag
@@ -31,10 +32,11 @@ public_tables=(
 
 # 테이블 순서 중요
 deleted_tables=(
-  public.user
-  public.post
-  public.comment
-  public.hashtag
+  deleted.user
+  deleted.post
+  deleted.comment
+  deleted.hashtag
+  deleted.event
 )
 
 for public_table in "${public_tables[@]}"; do

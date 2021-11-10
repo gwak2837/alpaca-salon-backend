@@ -37,12 +37,32 @@ CREATE TABLE "user" (
   validation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- category
+-- 0: 갱년기
+-- 1: 수다
 CREATE TABLE post (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  category int NOT NULL,
   title varchar(100) NOT NULL,
   contents text NOT NULL,
+  user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
+);
+
+-- user_id: 진행자
+CREATE TABLE event (
+  id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title varchar(100) NOT NULL,
+  category int NOT NULL,
+  location text NOT NULL,
+  image_url text NOT NULL,
+  contents text NOT NULL,
+  is_available boolean NOT NULL DEFAULT FALSE,
+  date text,
+  price int,
   user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
 );
 
@@ -130,6 +150,7 @@ CREATE TABLE deleted.hashtag (
   name varchar(50) NOT NULL UNIQUE
 );
 
+-- result
 -- 0: 사용자 등록 성공
 -- 1: `unique_name`이 이미 존재
 CREATE FUNCTION create_user (
@@ -209,7 +230,7 @@ RETURNING post.id INTO post_id;
 END $$;
 
 CREATE FUNCTION create_comment (
-  contents text [],
+  contents text,
   post_id bigint,
   user_id uuid,
   parent_comment_id bigint DEFAULT NULL,
