@@ -1,0 +1,2 @@
+id,creation_time,modification_time,unique_name,nickname,name,email,phone,birth,bio,image_url,google_oauth,naver_oauth,kakao_oauth,password_hash,validation_time
+d4dbb193-389c-4c0d-b6b6-8adb9d279c5a,2021-11-10 15:19:19.819337+09,2021-11-10 15:19:19.819337+09,unique_name1,nickname1,,,,,,,,,,password_hash,2021-11-10 15:19:19.819337+09
