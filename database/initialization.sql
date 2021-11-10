@@ -16,7 +16,7 @@ COMMENT ON SCHEMA deleted IS 'deleted records history';
 
 GRANT ALL ON SCHEMA deleted TO alpaca_salon;
 
--- logout_time 이전 JWT 토큰은 유효하지 않음
+-- validation_time 이전 JWT 토큰은 유효하지 않음
 CREATE TABLE "user" (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -34,14 +34,15 @@ CREATE TABLE "user" (
   naver_oauth text UNIQUE,
   kakao_oauth text UNIQUE,
   password_hash text NOT NULL,
-  logout_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
+  validation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE post (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  contents text [] NOT NULL,
+  title varchar(100) NOT NULL,
+  contents text NOT NULL,
   user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
 );
 
@@ -49,7 +50,7 @@ CREATE TABLE "comment" (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  contents text [] NOT NULL,
+  contents text NOT NULL,
   --
   post_id bigint NOT NULL REFERENCES post ON DELETE CASCADE,
   user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE,
@@ -106,6 +107,7 @@ CREATE TABLE deleted.post (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title varchar(100) NOT NULL,
   contents text [] NOT NULL,
   user_id uuid NOT NULL REFERENCES deleted.user ON DELETE CASCADE
 );
@@ -195,12 +197,13 @@ RETURN;
 END $$;
 
 CREATE FUNCTION create_post (
-  contents text [],
+  title varchar(100),
+  contents text,
   user_id uuid,
   out post_id bigint
 ) LANGUAGE plpgsql AS $$ BEGIN
-INSERT INTO post (contents, user_id)
-VALUES (contents, user_id)
+INSERT INTO post (title, contents, user_id)
+VALUES (title, contents, user_id)
 RETURNING post.id INTO post_id;
 
 END $$;
@@ -215,5 +218,13 @@ CREATE FUNCTION create_comment (
 INSERT INTO "comment" (contents, comment_id, post_id, user_id)
 VALUES (contents, parent_comment_id, post_id, user_id)
 RETURNING "comment".id INTO comment_id;
+
+END $$;
+
+CREATE FUNCTION search_post (keywords text []) RETURNS TABLE (id bigint) LANGUAGE plpgsql STABLE AS $$ BEGIN RETURN QUERY
+SELECT post.id
+FROM post
+WHERE title LIKE ANY (keywords)
+  OR contents LIKE ANY (keywords);
 
 END $$;

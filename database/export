@@ -8,7 +8,12 @@ fi
 
 export $(grep -v '^#' $ENV_FILE_PATH | xargs)
 
-CONNECTION_STRING_WITH_SSL=$CONNECTION_STRING?sslmode=require
+if [[ $CONNECTION_STRING =~ "@localhost" ]]; then
+  CONNECTION_STRING_WITH_SSL=$CONNECTION_STRING
+else
+  CONNECTION_STRING_WITH_SSL=$CONNECTION_STRING?sslmode=require
+fi
+
 echo $CONNECTION_STRING_WITH_SSL
 
 rm -r database/data

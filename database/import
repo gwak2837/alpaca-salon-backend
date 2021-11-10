@@ -8,7 +8,12 @@ fi
 
 export $(grep -v '^#' $ENV_FILE_PATH | xargs)
 
-CONNECTION_STRING_WITH_SSL=$CONNECTION_STRING?sslmode=require
+if [[ $CONNECTION_STRING =~ "@localhost" ]]; then
+  CONNECTION_STRING_WITH_SSL=$CONNECTION_STRING
+else
+  CONNECTION_STRING_WITH_SSL=$CONNECTION_STRING?sslmode=require
+fi
+
 echo $CONNECTION_STRING_WITH_SSL
 
 psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql
@@ -16,40 +21,20 @@ psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql
 # 테이블 순서 중요
 public_tables=(
   public.user
-  public.leader_user_x_follower_user
-  public.hashtag
-  public.store
-  public.store_x_hashtag
-  public.menu
-  public.menu_x_hashtag
-  public.news
-  public.news_x_tagged_menu
-  public.trend
-  public.feed
-  public.feed_x_hashtag
-  public.feed_x_rated_menu
+  public.post
   public.comment
-  public.bucket
-  public.bucket_x_menu
-  public.bucket_x_store
+  public.hashtag
+  public.user_x_liked_post
   public.user_x_liked_comment
-  public.user_x_liked_feed
-  public.user_x_liked_menu
-  public.user_x_liked_news
-  public.user_x_liked_store
-  public.user_x_liked_trend
+  public.post_x_hashtag
 )
 
 # 테이블 순서 중요
 deleted_tables=(
-  deleted.user
-  deleted.hashtag
-  deleted.store
-  deleted.menu
-  deleted.news
-  deleted.feed
-  deleted.comment
-  deleted.bucket
+  public.user
+  public.post
+  public.comment
+  public.hashtag
 )
 
 for public_table in "${public_tables[@]}"; do
