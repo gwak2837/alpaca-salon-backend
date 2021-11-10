@@ -1,0 +1,29 @@
+type User {
+  id: UUID!
+  creationTime: DateTime!
+  modificationTime: DateTime!
+  uniqueName: NonEmptyString!
+  email: EmailAddress!
+  name: NonEmptyString!
+  phone: NonEmptyString!
+  isEmailVerified: Boolean!
+  isStarUser: Boolean!
+  providers: [Provider!]!
+  bio: String
+  birth: Date
+  imageUrl: URL
+  nickname: String
+
+  # 통계
+  feedCount: Int!
+  followerCount: Int!
+  followingCount: Int!
+}
+
+"OAuth 공급자"
+enum Provider {
+  ALPACA_SALON
+  GOOGLE
+  NAVER
+  KAKAO
+}

@@ -1,0 +1,221 @@
+<html>
+  <head>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+    <style type="text/css">
+      #mynetwork {
+        width: 100%;
+        height: 100%;
+        border: 1px solid lightgray;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mynetwork"></div>
+
+    <script type="text/javascript">
+      const oneMany = {
+        enabled: true,
+        type: 'image',
+        imageWidth: 16,
+        imageHeight: 12,
+        src: 'images/one-many.webp',
+      }
+
+      const onlyOne = {
+        enabled: true,
+        type: 'image',
+        imageWidth: 16,
+        imageHeight: 16,
+        src: 'images/only-one.webp',
+      }
+
+      const zeroMany = {
+        enabled: true,
+        type: 'image',
+        imageWidth: 16,
+        imageHeight: 16,
+        src: 'images/zero-many.webp',
+      }
+
+      const zeroOne = {
+        enabled: true,
+        type: 'image',
+        imageWidth: 16,
+        imageHeight: 16,
+        src: 'images/zero-one.webp',
+      }
+
+      // create an array with nodes
+      const nodes = new vis.DataSet([
+        { id: 'user', label: 'user', fixed: true },
+        { id: 'store', label: 'store' },
+        { id: 'menu', label: 'menu' },
+        { id: 'news', label: 'news' },
+        { id: 'feed', label: 'feed' },
+        { id: 'comment', label: 'comment' },
+      ])
+
+      // create an array with edges
+      const edges = new vis.DataSet([
+        {
+          from: 'user',
+          to: 'menu',
+          arrows: {
+            from: zeroMany,
+            to: zeroMany,
+          },
+          label: 'like',
+        },
+        {
+          from: 'user',
+          to: 'store',
+          arrows: {
+            from: zeroMany,
+            to: zeroMany,
+          },
+          label: 'like',
+        },
+        {
+          from: 'user',
+          to: 'menu',
+          arrows: {
+            from: zeroMany,
+            to: zeroMany,
+          },
+          label: 'bucket list',
+        },
+        {
+          from: 'user',
+          to: 'store',
+          arrows: {
+            from: zeroMany,
+            to: zeroMany,
+          },
+          label: 'bucket list',
+        },
+        {
+          from: 'user',
+          to: 'user',
+          arrows: {
+            from: zeroMany,
+            to: zeroMany,
+          },
+          label: 'follower',
+        },
+        {
+          from: 'news',
+          to: 'menu',
+          arrows: {
+            from: zeroMany,
+            to: zeroMany,
+          },
+          label: 'tagged',
+        },
+        {
+          from: 'feed',
+          to: 'menu',
+          arrows: {
+            from: zeroMany,
+            to: oneMany,
+          },
+          label: 'tagged',
+        },
+        {
+          from: 'user',
+          to: 'store',
+          arrows: {
+            from: zeroOne,
+            to: zeroMany,
+          },
+          label: '소유',
+        },
+        {
+          from: 'store',
+          to: 'menu',
+          arrows: {
+            from: onlyOne,
+            to: oneMany,
+          },
+        },
+        {
+          from: 'store',
+          to: 'news',
+          arrows: {
+            from: onlyOne,
+            to: zeroMany,
+          },
+          label: '작성한 매장',
+        },
+        {
+          from: 'store',
+          to: 'feed',
+          arrows: {
+            from: onlyOne,
+            to: zeroMany,
+          },
+          label: 'tagged',
+        },
+        {
+          from: 'user',
+          to: 'feed',
+          arrows: {
+            from: onlyOne,
+            to: zeroMany,
+          },
+          label: '작성자',
+        },
+        {
+          from: 'user',
+          to: 'comment',
+          arrows: {
+            from: onlyOne,
+            to: zeroMany,
+          },
+          label: '작성자',
+        },
+        {
+          from: 'feed',
+          to: 'comment',
+          arrows: {
+            from: onlyOne,
+            to: zeroMany,
+          },
+        },
+        {
+          from: 'comment',
+          to: 'comment',
+          arrows: {
+            from: zeroOne,
+            to: zeroMany,
+          },
+          label: '대댓글',
+        },
+      ])
+
+      // create a network
+      const container = document.getElementById('mynetwork')
+
+      // provide the data in the vis format
+      const data = {
+        nodes: nodes,
+        edges: edges,
+      }
+
+      const options = {
+        nodes: {
+          shape: 'box',
+        },
+        edges: {
+          width: 2,
+          length: 400,
+        },
+      }
+
+      // initialize your network!
+      const network = new vis.Network(container, data, options)
+    </script>
+  </body>
+</html>

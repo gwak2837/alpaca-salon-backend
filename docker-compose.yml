@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  alpaca-salon-server:
+    build: .
+    container_name: alpaca-salon-server
+    env_file: .env
+    image: alpaca-salon-server:latest
+    # restart: always
+    ports:
+      - $PORT:$PORT
+#     volumes:
+#       - 'sobok:/server'
+# volumes:
+#   sobok:

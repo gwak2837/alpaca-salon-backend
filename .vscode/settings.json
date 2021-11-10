@@ -1,0 +1,105 @@
+{
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "search.exclude": {
+    "**/.git": true,
+    "**/.yarn": true,
+    "**/dist": true,
+    "**/.pnp.*": true,
+    "yarn.lock": true
+  },
+  "eslint.packageManager": "yarn",
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  "sort-imports.default-sort-style": "module",
+
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "sqltools.format": {
+    "reservedWordCase": "upper",
+    "linesBetweenQueries": 2
+  },
+
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "Sobok - Localhost",
+      "database": "sobok",
+      "username": "sindy"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "gwak2837 - Localhost",
+      "database": "gwak2837",
+      "username": "gwak2837"
+    },
+    {
+      "previewLimit": 50,
+      "server": "152.70.244.168",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "Sobok - Oracle Instance",
+      "database": "sobok",
+      "username": "sindy"
+    },
+    {
+      "previewLimit": 50,
+      "server": "152.70.244.168",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "Kubernetes - Oracle Instance",
+      "database": "kubernetes",
+      "username": "sindy"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Kubernetes - Localhost",
+      "database": "kubernetes",
+      "username": "gwak2837",
+      "password": ""
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Alpaca Salon - Localhost",
+      "database": "alpaca_salon",
+      "username": "alpaca_salon",
+      "password": ""
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+type Query {
+  "피드 상세"
+  post(id: ID!): Post
+}

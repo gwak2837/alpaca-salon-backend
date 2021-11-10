@@ -1,0 +1,185 @@
+type Comment {
+  contents: [NonEmptyString!]!
+  creationTime: DateTime!
+  id: ID!
+  imageUrl: URL
+  modificationTime: DateTime!
+
+  """
+  이 댓글의 상위 댓글
+  """
+  parentComment: Comment
+
+  """
+  이 댓글이 달린 피드
+  """
+  post: Post!
+
+  """
+  댓글을 작성한 사용자
+  """
+  user: User!
+}
+
+scalar Date
+
+scalar DateTime
+
+scalar EmailAddress
+
+scalar JWT
+
+scalar LastValue
+
+scalar Latitude
+
+scalar Longitude
+
+type Mutation {
+  """
+  고유 이름 또는 이메일과 비밀번호를 전송하면 JWT 인증 토큰을 반환함
+  """
+  login(passwordHash: NonEmptyString!, uniqueNameOrEmail: NonEmptyString!): UserAuthentication
+
+  """
+  JWT 인증 토큰과 같이 요청하면 로그아웃 성공 여부를 반환함
+  """
+  logout: Boolean!
+
+  """
+  회원가입에 필요한 정보를 주면 성공했을 때 인증 토큰을 반환함
+  """
+  register(input: RegisterInput!): UserAuthentication
+
+  """
+  회원탈퇴 시 사용자 정보가 모두 초기화됩
+  """
+  unregister: Boolean!
+}
+
+scalar NonEmptyString
+
+"""
+기본값: 내림차순
+"""
+enum OrderDirection {
+  ASC
+}
+
+input Pagination {
+  lastId: ID
+  lastValue: LastValue
+  limit: PositiveInt!
+}
+
+scalar PositiveInt
+
+type Post {
+  commentCount: Int!
+  contents: [NonEmptyString!]!
+  creationTime: DateTime!
+
+  """
+  피드에 달린 해시태그
+  """
+  hashtags: [NonEmptyString!]
+  id: ID!
+  imageUrls: [URL!]!
+
+  """
+  피드 좋아요 여부 (로그인 필요)
+  """
+  isLiked: Boolean!
+  likeCount: Int!
+  modificationTime: DateTime!
+  rating: NonEmptyString!
+  storeId: ID!
+  userId: ID!
+}
+
+"""
+OAuth 공급자
+"""
+enum Provider {
+  ALPACA_SALON
+  GOOGLE
+  KAKAO
+  NAVER
+}
+
+type Query {
+  """
+  특정 게시글에 달린 댓글
+  """
+  commentsByPost(postId: ID!): [Comment]
+
+  """
+  사용자 고유 이름 중복 여부 검사
+  """
+  isUniqueNameUnique(uniqueName: NonEmptyString!): Boolean!
+
+  """
+  좋아요 누른 댓글
+  """
+  likedComments: [Comment!]
+
+  """
+  인증 토큰과 같이 요청하면 사용자 정보를 반환
+  """
+  me: User!
+
+  """
+  내가 쓴 댓글
+  """
+  myComments: [Comment!]
+
+  """
+  피드 상세
+  """
+  post(id: ID!): Post
+
+  """
+  대댓글
+  """
+  subComments(id: ID!): [Comment]
+}
+
+input RegisterInput {
+  bio: String
+  birth: Date
+  email: EmailAddress!
+  imageUrl: URL
+  name: NonEmptyString!
+  passwordHash: NonEmptyString!
+  phone: NonEmptyString!
+  uniqueName: NonEmptyString!
+}
+
+scalar URL
+
+scalar UUID
+
+type User {
+  bio: String
+  birth: Date
+  creationTime: DateTime!
+  email: EmailAddress!
+  feedCount: Int!
+  followerCount: Int!
+  followingCount: Int!
+  id: UUID!
+  imageUrl: URL
+  isEmailVerified: Boolean!
+  isStarUser: Boolean!
+  modificationTime: DateTime!
+  name: NonEmptyString!
+  nickname: String
+  phone: NonEmptyString!
+  providers: [Provider!]!
+  uniqueName: NonEmptyString!
+}
+
+type UserAuthentication {
+  jwt: JWT!
+  userUniqueName: NonEmptyString!
+}
