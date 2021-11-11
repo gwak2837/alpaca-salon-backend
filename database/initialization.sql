@@ -95,6 +95,14 @@ CREATE TABLE user_x_liked_event (
   PRIMARY KEY (user_id, event_id)
 );
 
+CREATE TABLE user_x_reserved_event (
+  user_id uuid REFERENCES "user" ON DELETE CASCADE,
+  event_id bigint REFERENCES event ON DELETE CASCADE,
+  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  --
+  PRIMARY KEY (user_id, event_id)
+);
+
 CREATE TABLE user_x_liked_comment (
   liking_user_id uuid REFERENCES "user" ON DELETE CASCADE,
   liked_user_id uuid REFERENCES "user" ON DELETE CASCADE,
@@ -234,7 +242,7 @@ RETURNING post.id INTO post_id;
 
 END $$;
 
-CREATE FUNCTION create_post (
+CREATE FUNCTION update_post (
   title varchar(100),
   contents text,
   user_id uuid,

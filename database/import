@@ -25,8 +25,9 @@ public_tables=(
   public.comment
   public.hashtag
   public.event
-  public.user_x_liked_post
   public.user_x_liked_comment
+  public.user_x_liked_event
+  public.user_x_reserved_event
   public.post_x_hashtag
 )
 
