@@ -51,6 +51,9 @@ CREATE TABLE post (
 );
 
 -- user_id: 진행자
+-- category
+-- 0: 전문가 강의
+-- 1: 수다
 CREATE TABLE event (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -59,6 +62,7 @@ CREATE TABLE event (
   category int NOT NULL,
   location text NOT NULL,
   image_url text NOT NULL,
+  event_url text NOT NULL,
   contents text NOT NULL,
   is_available boolean NOT NULL DEFAULT FALSE,
   date text,
@@ -83,20 +87,21 @@ CREATE TABLE hashtag (
   name varchar(50) NOT NULL UNIQUE
 );
 
-CREATE TABLE user_x_liked_post (
+CREATE TABLE user_x_liked_event (
   user_id uuid REFERENCES "user" ON DELETE CASCADE,
-  post_id bigint REFERENCES post ON DELETE CASCADE,
+  event_id bigint REFERENCES event ON DELETE CASCADE,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   --
-  PRIMARY KEY (user_id, post_id)
+  PRIMARY KEY (user_id, event_id)
 );
 
 CREATE TABLE user_x_liked_comment (
-  user_id uuid REFERENCES "user" ON DELETE CASCADE,
+  liking_user_id uuid REFERENCES "user" ON DELETE CASCADE,
+  liked_user_id uuid REFERENCES "user" ON DELETE CASCADE,
   comment_id bigint REFERENCES "comment" ON DELETE CASCADE,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   --
-  PRIMARY KEY (user_id, comment_id)
+  PRIMARY KEY (liking_user_id, liked_user_id, comment_id)
 );
 
 CREATE TABLE post_x_hashtag (
@@ -214,6 +219,18 @@ RETURNING "user".id,
 result = 0;
 
 RETURN;
+
+END $$;
+
+CREATE FUNCTION create_post (
+  title varchar(100),
+  contents text,
+  user_id uuid,
+  out post_id bigint
+) LANGUAGE plpgsql AS $$ BEGIN
+INSERT INTO post (title, contents, user_id)
+VALUES (title, contents, user_id)
+RETURNING post.id INTO post_id;
 
 END $$;
 
