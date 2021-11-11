@@ -163,6 +163,22 @@ CREATE TABLE deleted.hashtag (
   name varchar(50) NOT NULL UNIQUE
 );
 
+CREATE TABLE deleted.event (
+  id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title varchar(100) NOT NULL,
+  category int NOT NULL,
+  location text NOT NULL,
+  image_url text NOT NULL,
+  event_url text NOT NULL,
+  contents text NOT NULL,
+  is_available boolean NOT NULL DEFAULT FALSE,
+  date text,
+  price int,
+  user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
+);
+
 -- result
 -- 0: 사용자 등록 성공
 -- 1: `unique_name`이 이미 존재
