@@ -134,9 +134,19 @@ type Query {
   myComments: [Comment!]
 
   """
-  피드 상세
+  글 상세
   """
   post(id: ID!): Post
+
+  """
+  글 목록
+  """
+  posts(id: ID!, pagination: Pagination!): [Post!]
+
+  """
+  글 검색
+  """
+  searchPosts(keywords: [NonEmptyString!]!): [Post!]
 
   """
   대댓글

@@ -112,8 +112,12 @@ export type Query = {
   me: User
   /** 내가 쓴 댓글 */
   myComments?: Maybe<Array<Comment>>
-  /** 피드 상세 */
+  /** 글 상세 */
   post?: Maybe<Post>
+  /** 글 목록 */
+  posts?: Maybe<Array<Post>>
+  /** 글 검색 */
+  searchPosts?: Maybe<Array<Post>>
   /** 대댓글 */
   subComments?: Maybe<Array<Maybe<Comment>>>
 }
@@ -128,6 +132,15 @@ export type QueryIsUniqueNameUniqueArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['ID']
+}
+
+export type QueryPostsArgs = {
+  id: Scalars['ID']
+  pagination: Pagination
+}
+
+export type QuerySearchPostsArgs = {
+  keywords: Array<Scalars['NonEmptyString']>
 }
 
 export type QuerySubCommentsArgs = {
@@ -431,6 +444,18 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryPostArgs, 'id'>
+  >
+  posts?: Resolver<
+    Maybe<Array<ResolversTypes['Post']>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryPostsArgs, 'id' | 'pagination'>
+  >
+  searchPosts?: Resolver<
+    Maybe<Array<ResolversTypes['Post']>>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySearchPostsArgs, 'keywords'>
   >
   subComments?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['Comment']>>>,
