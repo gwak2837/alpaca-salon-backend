@@ -249,3 +249,31 @@ CREATE DATABASE alpaca_salon OWNER alpaca_salon TEMPLATE template0 LC_COLLATE "C
 \c alpaca_salon postgres
 ALTER SCHEMA public OWNER TO alpaca_salon;
 ```
+
+#### Connect to Cloud SQL with proxy
+
+```
+gcloud auth login
+gcloud config set project $PROJECT_NAME
+
+curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64
+chmod +x cloud_sql_proxy
+./cloud_sql_proxy -instances=$CONNECTION_NAME=tcp:5432
+
+psql "host=127.0.0.1 port=5432 sslmode=disable dbname=$POSTGRES_DB user=$POSTGRES_USER"
+```
+
+## Slack
+
+```bash
+https://slack.github.com/
+
+# https://github.com/integrations/slack#subscribing-and-unsubscribing
+/github subscribe rmfpdlxmtidl/alpaca-salon-backend commits:* reviews comments
+/github unsubscribe rmfpdlxmtidl/alpaca-salon-backend deployments
+
+# https://github.com/rmfpdlxmtidl/google-cloud-build-slack
+export SLACK_WEBHOOK_URL=
+export PROJECT_ID=
+./setup.sh
+```
