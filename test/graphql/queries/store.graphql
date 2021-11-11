@@ -1,9 +1,0 @@
-query Query($storeId: ID!) {
-  store(id: $storeId) {
-    id
-    name
-    imageUrls
-    description
-    isLiked
-  }
-}
