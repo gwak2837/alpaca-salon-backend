@@ -1514,7 +1514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@google-cloud/storage@npm:^5.15.5":
+"@google-cloud/storage@npm:^5.16.0":
   version: 5.16.0
   resolution: "@google-cloud/storage@npm:5.16.0"
   dependencies:
@@ -2703,7 +2703,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^16.11.6":
+"@types/node@npm:*, @types/node@npm:^16.11.7":
   version: 16.11.7
   resolution: "@types/node@npm:16.11.7"
   checksum: 2706403e6efc4aa40fdce8f0b5d9884d5600c3c8610aedc7fa5e7e298d30366f7e8b7296028d52898dca3edef4c3e827b03bf20952c4780f13fa4e79864f7a86
@@ -2730,16 +2730,6 @@ __metadata:
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
   checksum: fd6bce2b674b6efc3db4c7c3d336bd70c90838e8439de639b909ce22f3720d21344f52427f1d9e57b265fcb7f6c018699b99e5e0c208a1a4823014269a6bf35b
-  languageName: node
-  linkType: hard
-
-"@types/passport-facebook@npm:^2.1.11":
-  version: 2.1.11
-  resolution: "@types/passport-facebook@npm:2.1.11"
-  dependencies:
-    "@types/express": "*"
-    "@types/passport": "*"
-  checksum: 655fade194454f2b99072049212af1c90ae96bb4892377df8a5397ad62afb5fc634277dbd0f9c4f381060863155e3bf13b69f2193b4ed8ce0e9bad645f8c61eb
   languageName: node
   linkType: hard
 
@@ -2875,7 +2865,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.3.0":
+"@typescript-eslint/eslint-plugin@npm:^5.3.1":
   version: 5.3.1
   resolution: "@typescript-eslint/eslint-plugin@npm:5.3.1"
   dependencies:
@@ -2913,7 +2903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.3.0":
+"@typescript-eslint/parser@npm:^5.3.1":
   version: 5.3.1
   resolution: "@typescript-eslint/parser@npm:5.3.1"
   dependencies:
@@ -3343,7 +3333,7 @@ __metadata:
     "@babel/core": ^7.16.0
     "@babel/preset-env": ^7.16.0
     "@babel/preset-typescript": ^7.16.0
-    "@google-cloud/storage": ^5.15.5
+    "@google-cloud/storage": ^5.16.0
     "@graphql-codegen/add": ^3.1.0
     "@graphql-codegen/cli": 2.2.2
     "@graphql-codegen/schema-ast": ^2.4.0
@@ -3354,14 +3344,13 @@ __metadata:
     "@types/express": ^4.17.13
     "@types/jest": ^27.0.2
     "@types/jsonwebtoken": ^8.5.5
-    "@types/node": ^16.11.6
+    "@types/node": ^16.11.7
     "@types/passport": ^1.0.7
-    "@types/passport-facebook": ^2.1.11
     "@types/passport-google-oauth20": ^2.0.11
     "@types/pg": ^8.6.1
     "@types/redis": ^2.8.32
-    "@typescript-eslint/eslint-plugin": ^5.3.0
-    "@typescript-eslint/parser": ^5.3.0
+    "@typescript-eslint/eslint-plugin": ^5.3.1
+    "@typescript-eslint/parser": ^5.3.1
     "@vramework/schemats": ^0.0.12
     apollo-server-core: ^3.5.0
     apollo-server-errors: ^3.3.0
@@ -3374,17 +3363,17 @@ __metadata:
     eslint: ^7.32.0
     eslint-config-prettier: ^8.3.0
     eslint-config-standard: ^16.0.3
-    eslint-plugin-import: ^2.25.2
-    eslint-plugin-jest: ^25.2.3
+    eslint-plugin-import: ^2.25.3
+    eslint-plugin-jest: ^25.2.4
     eslint-plugin-node: ^11.1.0
     eslint-plugin-promise: ^5.1.1
     express: ^4.17.1
-    graphql: ^15.6.1
+    graphql: ^15.7.2
     graphql-scalars: ^1.13.1
     husky: ^7.0.4
     jest: ^27.3.1
     jsonwebtoken: ^8.5.1
-    nodemon: ^2.0.14
+    nodemon: ^2.0.15
     passport: ^0.5.0
     passport-google-oauth20: ^2.0.0
     pg: ^8.7.1
@@ -3392,7 +3381,7 @@ __metadata:
     redis: ^3.1.2
     ts-loader: ^9.2.6
     typescript: ^4.4.4
-    webpack: ^5.62.1
+    webpack: ^5.63.0
     webpack-cli: ^4.9.1
   languageName: unknown
   linkType: soft
@@ -5343,7 +5332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-module-utils@npm:^2.7.0":
+"eslint-module-utils@npm:^2.7.1":
   version: 2.7.1
   resolution: "eslint-module-utils@npm:2.7.1"
   dependencies:
@@ -5366,18 +5355,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.25.2":
-  version: 2.25.2
-  resolution: "eslint-plugin-import@npm:2.25.2"
+"eslint-plugin-import@npm:^2.25.3":
+  version: 2.25.3
+  resolution: "eslint-plugin-import@npm:2.25.3"
   dependencies:
     array-includes: ^3.1.4
     array.prototype.flat: ^1.2.5
     debug: ^2.6.9
     doctrine: ^2.1.0
     eslint-import-resolver-node: ^0.3.6
-    eslint-module-utils: ^2.7.0
+    eslint-module-utils: ^2.7.1
     has: ^1.0.3
-    is-core-module: ^2.7.0
+    is-core-module: ^2.8.0
     is-glob: ^4.0.3
     minimatch: ^3.0.4
     object.values: ^1.1.5
@@ -5385,11 +5374,11 @@ __metadata:
     tsconfig-paths: ^3.11.0
   peerDependencies:
     eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
-  checksum: 4ca36e37faf72fb1ed25361ea8a6abbcc9daa65f3a9ac1dc0a660029000456e8c8b98a87b8cc2316541b13c6e5915df41d2dc4a1d7fe0729d9b72b9a3bd5b909
+  checksum: 8bdf4b1fafb0e5c8f57a1673f72d84307d32c06a23942990d198c8b32a85a5ae0098872d1ef5bf80d7dfe8ec542f6a671e3c5e706731a80b493c9015f7a147f5
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:^25.2.3":
+"eslint-plugin-jest@npm:^25.2.4":
   version: 25.2.4
   resolution: "eslint-plugin-jest@npm:25.2.4"
   dependencies:
@@ -6337,7 +6326,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^15.6.1":
+"graphql@npm:^15.7.2":
   version: 15.7.2
   resolution: "graphql@npm:15.7.2"
   checksum: eacb746e2981d0c346ef7365601873963af5356f64ce4d890ab89d213c67bf5bc1ae957b93c3902198798774c842b55dff219f38bad858691765e4debc265750
@@ -6834,7 +6823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.2.0, is-core-module@npm:^2.7.0":
+"is-core-module@npm:^2.2.0, is-core-module@npm:^2.8.0":
   version: 2.8.0
   resolution: "is-core-module@npm:2.8.0"
   dependencies:
@@ -8733,7 +8722,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemon@npm:^2.0.14":
+"nodemon@npm:^2.0.15":
   version: 2.0.15
   resolution: "nodemon@npm:2.0.15"
   dependencies:
@@ -11442,7 +11431,7 @@ typescript@^4.4.4:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.62.1":
+"webpack@npm:^5.63.0":
   version: 5.63.0
   resolution: "webpack@npm:5.63.0"
   dependencies:
