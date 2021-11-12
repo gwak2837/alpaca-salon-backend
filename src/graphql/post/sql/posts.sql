@@ -1,14 +1,16 @@
 SELECT post.id,
+  post.creation_time,
+  post.modification_time,
   category,
   title,
   post.contents,
-  "user".id,
-  "user".nickname,
-  COUNT("comment".id)
+  COUNT("comment".id) AS comment_count,
+  "user".id AS user__id,
+  "user".nickname AS user__nickname
 FROM post
-  JOIN "comment" ON "comment".post_id = post.id
   JOIN "user" ON "user".id = post.user_id
-WHERE id < $1
+  LEFT JOIN "comment" ON "comment".post_id = post.id
+WHERE post.id < $1
 GROUP BY post.id,
   "user".id
 FETCH FIRST $2 ROWS ONLY

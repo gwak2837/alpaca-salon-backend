@@ -3,7 +3,7 @@ type Query {
   post(id: ID!): Post
 
   "글 목록"
-  posts(id: ID!, pagination: Pagination!): [Post!]
+  posts(pagination: Pagination!): [Post!]
 
   "글 검색"
   searchPosts(keywords: [NonEmptyString!]!): [Post!]

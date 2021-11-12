@@ -76,20 +76,23 @@ export type Pagination = {
 
 export type Post = {
   __typename?: 'Post'
-  commentCount: Scalars['Int']
-  contents: Array<Scalars['NonEmptyString']>
+  category: PostCategory
+  contents: Scalars['NonEmptyString']
   creationTime: Scalars['DateTime']
   /** 피드에 달린 해시태그 */
   hashtags?: Maybe<Array<Scalars['NonEmptyString']>>
   id: Scalars['ID']
-  imageUrls: Array<Scalars['URL']>
   /** 피드 좋아요 여부 (로그인 필요) */
   isLiked: Scalars['Boolean']
-  likeCount: Scalars['Int']
   modificationTime: Scalars['DateTime']
-  rating: Scalars['NonEmptyString']
-  storeId: Scalars['ID']
-  userId: Scalars['ID']
+  title: Scalars['NonEmptyString']
+  /** 글쓴이 */
+  user: User
+}
+
+export enum PostCategory {
+  FreeTopic = 'FREE_TOPIC',
+  Menopause = 'MENOPAUSE',
 }
 
 /** OAuth 공급자 */
@@ -135,7 +138,6 @@ export type QueryPostArgs = {
 }
 
 export type QueryPostsArgs = {
-  id: Scalars['ID']
   pagination: Pagination
 }
 
@@ -286,6 +288,7 @@ export type ResolversTypes = {
   Pagination: Pagination
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>
   Post: ResolverTypeWrapper<Post>
+  PostCategory: PostCategory
   Provider: Provider
   Query: ResolverTypeWrapper<{}>
   RegisterInput: RegisterInput
@@ -405,18 +408,15 @@ export type PostResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']
 > = {
-  commentCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  contents?: Resolver<Array<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  category?: Resolver<ResolversTypes['PostCategory'], ParentType, ContextType>
+  contents?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   hashtags?: Resolver<Maybe<Array<ResolversTypes['NonEmptyString']>>, ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  imageUrls?: Resolver<Array<ResolversTypes['URL']>, ParentType, ContextType>
   isLiked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
-  likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
-  rating?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
-  storeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  title?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }
 
@@ -449,7 +449,7 @@ export type QueryResolvers<
     Maybe<Array<ResolversTypes['Post']>>,
     ParentType,
     ContextType,
-    RequireFields<QueryPostsArgs, 'id' | 'pagination'>
+    RequireFields<QueryPostsArgs, 'pagination'>
   >
   searchPosts?: Resolver<
     Maybe<Array<ResolversTypes['Post']>>,

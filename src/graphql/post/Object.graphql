@@ -2,13 +2,10 @@ type Post {
   id: ID!
   creationTime: DateTime!
   modificationTime: DateTime!
-  rating: NonEmptyString!
-  contents: [NonEmptyString!]!
-  imageUrls: [URL!]!
-  likeCount: Int!
-  commentCount: Int!
-  storeId: ID!
-  userId: ID!
+  category: PostCategory!
+  title: NonEmptyString!
+  contents: NonEmptyString!
+  commentCount: PositiveInt!
 
   # from other table
   "피드에 달린 해시태그"
@@ -16,4 +13,12 @@ type Post {
 
   "피드 좋아요 여부 (로그인 필요)"
   isLiked: Boolean!
+
+  "글쓴이"
+  user: User!
+}
+
+enum PostCategory {
+  MENOPAUSE
+  FREE_TOPIC
 }

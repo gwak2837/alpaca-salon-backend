@@ -75,8 +75,8 @@ input Pagination {
 scalar PositiveInt
 
 type Post {
-  commentCount: Int!
-  contents: [NonEmptyString!]!
+  category: PostCategory!
+  contents: NonEmptyString!
   creationTime: DateTime!
 
   """
@@ -84,17 +84,23 @@ type Post {
   """
   hashtags: [NonEmptyString!]
   id: ID!
-  imageUrls: [URL!]!
 
   """
   피드 좋아요 여부 (로그인 필요)
   """
   isLiked: Boolean!
-  likeCount: Int!
   modificationTime: DateTime!
-  rating: NonEmptyString!
-  storeId: ID!
-  userId: ID!
+  title: NonEmptyString!
+
+  """
+  글쓴이
+  """
+  user: User!
+}
+
+enum PostCategory {
+  FREE_TOPIC
+  MENOPAUSE
 }
 
 """
@@ -141,7 +147,7 @@ type Query {
   """
   글 목록
   """
-  posts(id: ID!, pagination: Pagination!): [Post!]
+  posts(pagination: Pagination!): [Post!]
 
   """
   글 검색
