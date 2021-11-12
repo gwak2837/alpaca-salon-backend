@@ -22,15 +22,13 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
 
   "sort-imports.default-sort-style": "module",
-
-  "[sql]": {
-    "editor.defaultFormatter": "mtxr.sqltools"
-  },
   "sqltools.format": {
     "reservedWordCase": "upper",
     "linesBetweenQueries": 2
   },
-
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
   "[shellscript]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
