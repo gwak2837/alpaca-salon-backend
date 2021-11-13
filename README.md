@@ -258,9 +258,9 @@ gcloud config set project $PROJECT_NAME
 
 curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64
 chmod +x cloud_sql_proxy
-./cloud_sql_proxy -instances=$CONNECTION_NAME=tcp:5432
+./cloud_sql_proxy -instances=$CONNECTION_NAME=tcp:54321
 
-psql "host=127.0.0.1 port=5432 sslmode=disable dbname=$POSTGRES_DB user=$POSTGRES_USER"
+psql "host=127.0.0.1 port=54321 sslmode=disable dbname=$POSTGRES_DB user=$POSTGRES_USER"
 ```
 
 ## Slack

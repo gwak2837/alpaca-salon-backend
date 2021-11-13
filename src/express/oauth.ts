@@ -1,6 +1,7 @@
 import querystring from 'querystring'
 
 import { Express } from 'express'
+import fetch from 'node-fetch'
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 
@@ -8,7 +9,44 @@ import { poolQuery } from '../database/postgres'
 import { generateJWT } from '../utils/jwt'
 import socialLogin from './sql/socialLogin.sql'
 
+async function kakaoOauth(code: string) {
+  const response = await fetch('https://kauth.kakao.com/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `grant_type=authorization_code&client_id=e0732991ea45d45177b0d7f431d2f8d9&code=${code}`,
+  })
+
+  return (await response.json()) as Record<string, unknown>
+}
+
+async function getKakaoUserInfo(accessToken: string) {
+  const response = await fetch('https://kapi.kakao.com/v2/user/me', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  return (await response.json()) as Record<string, unknown>
+}
+
 export function setPassportStrategies(app: Express) {
+  // Kakao oauth
+  app.get('/oauth/kakao', async (req, res) => {
+    const frontendUrl = req.headers.referer ?? ''
+
+    if (req.query.code) {
+      const result = await kakaoOauth(req.query.code as string)
+      const kakaoUserInfo = await getKakaoUserInfo(result.access_token as string)
+      console.log('👀 - kakaoUserInfo', kakaoUserInfo)
+      return res.redirect(
+        `${frontendUrl}/oauth?${encodeURIComponent(JSON.stringify(kakaoUserInfo, null, 2))}`
+      )
+    }
+
+    return res.redirect(frontendUrl)
+  })
+
   app.use(passport.initialize())
 
   passport.use(
@@ -16,7 +54,7 @@ export function setPassportStrategies(app: Express) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID ?? '',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-        callbackURL: `${process.env.BACKEND_URL}/auth/google/callback`,
+        callbackURL: `${process.env.BACKEND_URL}/oauth/google/callback`,
       },
       async (accessToken, refreshToken, profile, done) => {
         if (profile.emails && (profile.emails[0] as any).verified) {
@@ -55,12 +93,12 @@ export function setPassportStrategies(app: Express) {
   })
 
   app.get(
-    '/auth/google',
+    '/oauth/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
   )
 
   app.get(
-    '/auth/google/callback',
+    '/oauth/google/callback',
     passport.authenticate('google', {
       failureRedirect: '/aa',
     }),
@@ -73,18 +111,6 @@ export function setPassportStrategies(app: Express) {
       } else {
         res.redirect(`${process.env.FRONTEND_URL}/signin`)
       }
-    }
-  )
-
-  app.get('/auth/facebook', passport.authenticate('facebook'))
-
-  app.get(
-    '/auth/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/login' }),
-    function (req, res) {
-      console.log(req.user)
-      // Successful authentication, redirect home.
-      res.redirect('/')
     }
   )
 }
