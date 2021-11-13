@@ -258,14 +258,43 @@ RETURNING post.id INTO post_id;
 
 END $$;
 
-CREATE FUNCTION update_post (
+CREATE FUNCTION create_event (
   title varchar(100),
+  category int,
+  location text,
+  image_url text,
+  event_url text,
   contents text,
   user_id uuid,
+  is_available boolean DEFAULT false,
+  date DEFAULT NULL,
+  price DEFAULT NULL,
   out post_id bigint
 ) LANGUAGE plpgsql AS $$ BEGIN
-INSERT INTO post (title, contents, user_id)
-VALUES (title, contents, user_id)
+INSERT INTO post (
+    title,
+    category,
+    location,
+    image_url,
+    event_url,
+    contents,
+    user_id,
+    is_available,
+    date,
+    price
+  )
+VALUES (
+    title,
+    category,
+    location,
+    image_url,
+    event_url,
+    contents,
+    user_id,
+    is_available,
+    date,
+    price
+  )
 RETURNING post.id INTO post_id;
 
 END $$;
