@@ -5,7 +5,7 @@ import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 
 import { poolQuery } from '../database/postgres'
-import { setPassportStrategies } from '../express/oauth'
+import { setOAuthStrategies } from '../express/oauth'
 import { resolvers } from '../graphql'
 import typeDefs from '../graphql/generated/schema.graphql'
 import { verifyJWT } from '../utils/jwt'
@@ -19,7 +19,7 @@ export async function startApolloServer() {
   // Required logic for integrating with Express
   const app = express()
   const httpServer = http.createServer(app)
-  setPassportStrategies(app)
+  setOAuthStrategies(app)
 
   // Same ApolloServer initialization as before, plus the drain plugin.
   const apolloServer = new ApolloServer({
