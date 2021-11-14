@@ -17,18 +17,21 @@ COMMENT ON SCHEMA deleted IS 'deleted records history';
 GRANT ALL ON SCHEMA deleted TO alpaca_salon;
 
 -- validation_time 이전 JWT 토큰은 유효하지 않음
+-- gender
+-- 0: 미확인, 1: 남성, 2: 여성
 CREATE TABLE "user" (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  unique_name varchar(50) NOT NULL UNIQUE,
   nickname varchar(50) NOT NULL,
-  name varchar(50),
-  email varchar(50) UNIQUE,
-  phone varchar(20),
-  birth date,
-  bio varchar(50),
   image_url text,
+  email varchar(50) UNIQUE,
+  phone varchar(20) UNIQUE,
+  unique_name varchar(50) UNIQUE,
+  gender int,
+  age_range varchar(5),
+  birthday varchar(4),
+  bio varchar(100),
   --
   google_oauth text UNIQUE,
   naver_oauth text UNIQUE,
@@ -38,8 +41,7 @@ CREATE TABLE "user" (
 );
 
 -- category
--- 0: 갱년기
--- 1: 수다
+-- 0: 갱년기, 1: 수다
 CREATE TABLE post (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -50,10 +52,9 @@ CREATE TABLE post (
   user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
 );
 
--- user_id: 진행자
+-- user_id: 줌 진행자
 -- category
--- 0: 전문가 강의
--- 1: 수다
+-- 0: 전문가 강의, 1: 수다
 CREATE TABLE event (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -182,70 +183,63 @@ CREATE TABLE deleted.event (
 -- result
 -- 0: 사용자 등록 성공
 -- 1: `unique_name`이 이미 존재
-CREATE FUNCTION create_user (
-  unique_name varchar(50),
-  nickname varchar(50),
-  password_hash text,
-  name varchar(50) DEFAULT NULL,
-  email varchar(50) DEFAULT NULL,
-  phone varchar(20) DEFAULT NULL,
-  birth date DEFAULT NULL,
-  bio varchar(50) DEFAULT NULL,
-  image_url text DEFAULT NULL,
-  google_oauth text DEFAULT NULL,
-  naver_oauth text DEFAULT NULL,
-  kakao_oauth text DEFAULT NULL,
-  out result int,
-  out user_id uuid,
-  out user_unique_name varchar(50)
-) LANGUAGE plpgsql AS $$ BEGIN PERFORM
-FROM "user"
-WHERE "user".unique_name = create_user.unique_name;
-
-IF found THEN result = 1;
-
-RETURN;
-
-END IF;
-
-INSERT INTO "user" (
-    unique_name,
-    nickname,
-    password_hash,
-    name,
-    email,
-    phone,
-    birth,
-    bio,
-    image_url,
-    google_oauth,
-    naver_oauth,
-    kakao_oauth
-  )
-VALUES (
-    unique_name,
-    nickname,
-    password_hash,
-    name,
-    email,
-    phone,
-    birth,
-    bio,
-    image_url,
-    google_oauth,
-    naver_oauth,
-    kakao_oauth
-  )
-RETURNING "user".id,
-  "user".unique_name INTO user_id,
-  user_unique_name;
-
-result = 0;
-
-RETURN;
-
-END $$;
-
+-- CREATE FUNCTION create_user (
+--   unique_name varchar(50),
+--   nickname varchar(50),
+--   password_hash text,
+--   name varchar(50) DEFAULT NULL,
+--   email varchar(50) DEFAULT NULL,
+--   phone varchar(20) DEFAULT NULL,
+--   birth date DEFAULT NULL,
+--   bio varchar(50) DEFAULT NULL,
+--   image_url text DEFAULT NULL,
+--   google_oauth text DEFAULT NULL,
+--   naver_oauth text DEFAULT NULL,
+--   kakao_oauth text DEFAULT NULL,
+--   out result int,
+--   out user_id uuid,
+--   out user_unique_name varchar(50)
+-- ) LANGUAGE plpgsql AS $$ BEGIN PERFORM
+-- FROM "user"
+-- WHERE "user".unique_name = create_user.unique_name
+--   OR "user".email = create_user.email;
+-- IF found THEN result = 1;
+-- RETURN;
+-- END IF;
+-- INSERT INTO "user" (
+--     unique_name,
+--     nickname,
+--     password_hash,
+--     name,
+--     email,
+--     phone,
+--     birth,
+--     bio,
+--     image_url,
+--     google_oauth,
+--     naver_oauth,
+--     kakao_oauth
+--   )
+-- VALUES (
+--     unique_name,
+--     nickname,
+--     password_hash,
+--     name,
+--     email,
+--     phone,
+--     birth,
+--     bio,
+--     image_url,
+--     google_oauth,
+--     naver_oauth,
+--     kakao_oauth
+--   )
+-- RETURNING "user".id,
+--   "user".unique_name INTO user_id,
+--   user_unique_name;
+-- result = 0;
+-- RETURN;
+-- END $$;
 CREATE FUNCTION create_post (
   title varchar(100),
   contents text,
@@ -267,8 +261,8 @@ CREATE FUNCTION create_event (
   contents text,
   user_id uuid,
   is_available boolean DEFAULT false,
-  date DEFAULT NULL,
-  price DEFAULT NULL,
+  date text DEFAULT NULL,
+  price int DEFAULT NULL,
   out post_id bigint
 ) LANGUAGE plpgsql AS $$ BEGIN
 INSERT INTO post (
