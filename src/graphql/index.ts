@@ -3,6 +3,7 @@ import { mergeResolvers } from '@graphql-tools/merge'
 // import * as commentObjectResolver from './comment/Object'
 // import * as commentQueryResolver from './comment/Query'
 // import * as commonResolver from './common/common'
+import * as postMutationResolver from './post/Mutation'
 import * as postObjectResolver from './post/Object'
 import * as postQueryResolver from './post/Query'
 // import * as userMutationResolver from './user/Mutation'
@@ -12,6 +13,7 @@ import * as userQueryResolver from './user/Query'
 const resolversArray = [
   // commonResolver,
   // commentQueryResolver,
+  postMutationResolver,
   postObjectResolver,
   postQueryResolver,
   // userMutationResolver,

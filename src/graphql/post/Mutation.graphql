@@ -1,0 +1,10 @@
+type Mutation {
+  updatePost(input: PostModificationInput!): Post
+}
+
+input PostModificationInput {
+  id: ID!
+  category: PostCategory
+  title: String
+  contents: String
+}

@@ -55,6 +55,7 @@ type Mutation {
   회원탈퇴 시 사용자 정보가 모두 초기화됩
   """
   unregister: Boolean!
+  updatePost(input: PostModificationInput!): Post
 }
 
 scalar NonEmptyString
@@ -76,6 +77,7 @@ scalar PositiveInt
 
 type Post {
   category: PostCategory!
+  commentCount: PositiveInt!
   contents: NonEmptyString!
   creationTime: DateTime!
 
@@ -101,6 +103,13 @@ type Post {
 enum PostCategory {
   FREE_TOPIC
   MENOPAUSE
+}
+
+input PostModificationInput {
+  category: PostCategory
+  contents: String
+  id: ID!
+  title: String
 }
 
 """

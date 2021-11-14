@@ -52,6 +52,7 @@ export type Mutation = {
   register?: Maybe<UserAuthentication>
   /** 회원탈퇴 시 사용자 정보가 모두 초기화됩 */
   unregister: Scalars['Boolean']
+  updatePost?: Maybe<Post>
 }
 
 export type MutationLoginArgs = {
@@ -61,6 +62,10 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   input: RegisterInput
+}
+
+export type MutationUpdatePostArgs = {
+  input: PostModificationInput
 }
 
 /** 기본값: 내림차순 */
@@ -77,6 +82,7 @@ export type Pagination = {
 export type Post = {
   __typename?: 'Post'
   category: PostCategory
+  commentCount: Scalars['PositiveInt']
   contents: Scalars['NonEmptyString']
   creationTime: Scalars['DateTime']
   /** 피드에 달린 해시태그 */
@@ -93,6 +99,13 @@ export type Post = {
 export enum PostCategory {
   FreeTopic = 'FREE_TOPIC',
   Menopause = 'MENOPAUSE',
+}
+
+export type PostModificationInput = {
+  category?: Maybe<PostCategory>
+  contents?: Maybe<Scalars['String']>
+  id: Scalars['ID']
+  title?: Maybe<Scalars['String']>
 }
 
 /** OAuth 공급자 */
@@ -289,6 +302,7 @@ export type ResolversTypes = {
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>
   Post: ResolverTypeWrapper<Post>
   PostCategory: PostCategory
+  PostModificationInput: PostModificationInput
   Provider: Provider
   Query: ResolverTypeWrapper<{}>
   RegisterInput: RegisterInput
@@ -317,6 +331,7 @@ export type ResolversParentTypes = {
   Pagination: Pagination
   PositiveInt: Scalars['PositiveInt']
   Post: Post
+  PostModificationInput: PostModificationInput
   Query: {}
   RegisterInput: RegisterInput
   String: Scalars['String']
@@ -392,6 +407,12 @@ export type MutationResolvers<
     RequireFields<MutationRegisterArgs, 'input'>
   >
   unregister?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  updatePost?: Resolver<
+    Maybe<ResolversTypes['Post']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdatePostArgs, 'input'>
+  >
 }
 
 export interface NonEmptyStringScalarConfig
@@ -409,6 +430,7 @@ export type PostResolvers<
   ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']
 > = {
   category?: Resolver<ResolversTypes['PostCategory'], ParentType, ContextType>
+  commentCount?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>
   contents?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   hashtags?: Resolver<Maybe<Array<ResolversTypes['NonEmptyString']>>, ParentType, ContextType>
