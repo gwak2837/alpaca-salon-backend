@@ -26,7 +26,7 @@ CREATE TABLE "user" (
   nickname varchar(50) NOT NULL,
   image_url text,
   email varchar(50) UNIQUE,
-  phone varchar(20) UNIQUE,
+  phone_number varchar(20) UNIQUE,
   unique_name varchar(50) UNIQUE,
   gender int,
   age_range varchar(5),
@@ -122,15 +122,19 @@ CREATE TABLE post_x_hashtag (
 );
 
 CREATE TABLE deleted.user (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  unique_name varchar(50) NOT NULL UNIQUE,
-  name varchar(50) NOT NULL,
-  nickname varchar(50),
-  email varchar(50) NOT NULL UNIQUE,
-  phone varchar(20),
-  birth date,
+  id uuid PRIMARY KEY,
+  creation_time timestamptz NOT NULL,
+  modification_time timestamptz NOT NULL,
+  deletion_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  nickname varchar(50) NOT NULL,
+  image_url text,
+  email varchar(50) UNIQUE,
+  phone_number varchar(20) UNIQUE,
+  unique_name varchar(50) UNIQUE,
+  gender int,
+  age_range varchar(5),
+  birthday varchar(4),
+  bio varchar(100),
   --
   google_oauth text UNIQUE,
   naver_oauth text UNIQUE,
@@ -179,6 +183,17 @@ CREATE TABLE deleted.event (
   price int,
   user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
 );
+
+CREATE FUNCTION delete_user (user_id uuid, out deleted_user_id uuid) LANGUAGE plpgsql AS $$ BEGIN
+INSERT INTO deleted.user
+SELECT *
+FROM "user"
+WHERE id = user_id;
+
+DELETE FROM "user"
+WHERE id = user_id;
+
+END $$;
 
 -- result
 -- 0: 사용자 등록 성공
@@ -240,18 +255,16 @@ CREATE TABLE deleted.event (
 -- result = 0;
 -- RETURN;
 -- END $$;
-CREATE FUNCTION create_post (
-  title varchar(100),
-  contents text,
-  user_id uuid,
-  out post_id bigint
-) LANGUAGE plpgsql AS $$ BEGIN
-INSERT INTO post (title, contents, user_id)
-VALUES (title, contents, user_id)
-RETURNING post.id INTO post_id;
-
-END $$;
-
+-- CREATE FUNCTION create_post (
+--   title varchar(100),
+--   contents text,
+--   user_id uuid,
+--   out post_id bigint
+-- ) LANGUAGE plpgsql AS $$ BEGIN
+-- INSERT INTO post (title, contents, user_id)
+-- VALUES (title, contents, user_id)
+-- RETURNING post.id INTO post_id;
+-- END $$;
 CREATE FUNCTION create_event (
   title varchar(100),
   category int,
