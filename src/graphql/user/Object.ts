@@ -33,19 +33,9 @@ export const User: UserResolvers<ApolloContext> = {
     return email
   },
 
-  name: async ({ id, name }, __, { userId }) => {
-    authenticateUser(userId, id)
-    return name
-  },
-
   phone: async ({ id, phone }, __, { userId }) => {
     authenticateUser(userId, id)
     return phone
-  },
-
-  isEmailVerified: async ({ id, isEmailVerified }, __, { userId }) => {
-    authenticateUser(userId, id)
-    return isEmailVerified
   },
 
   providers: (parent, __, { userId }) => {

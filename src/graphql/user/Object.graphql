@@ -2,17 +2,18 @@ type User {
   id: UUID!
   creationTime: DateTime!
   modificationTime: DateTime!
-  uniqueName: NonEmptyString!
   email: EmailAddress!
-  name: NonEmptyString!
-  phone: NonEmptyString!
-  isEmailVerified: Boolean!
-  isStarUser: Boolean!
+  nickname: NonEmptyString!
   providers: [Provider!]!
-  bio: String
-  birth: Date
+
+  # nullable
+  ageRange: NonEmptyString
+  bio: NonEmptyString
+  birthday: NonEmptyString
+  gender: Gender
   imageUrl: URL
-  nickname: String
+  phone: NonEmptyString
+  uniqueName: NonEmptyString
 
   # 통계
   feedCount: Int!
@@ -26,4 +27,9 @@ enum Provider {
   GOOGLE
   NAVER
   KAKAO
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }

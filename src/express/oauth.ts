@@ -18,11 +18,12 @@ function encodeGender(gender: string) {
 }
 
 function verifyTargetCustomer(user: any) {
+  // return user.gender === 'female' && +user.birthyear < 1980
   return true
 }
 
 function hasRequiredInfo(user: any) {
-  return user.nickname && user.phone
+  return user.nickname && user.phone_number && user.unique_name
 }
 
 async function fetchKakaoUserToken(code: string) {
@@ -49,7 +50,7 @@ async function fetchKakaoUserInfo(accessToken: string) {
 export function setOAuthStrategies(app: Express) {
   // Kakao OAuth
   app.get('/oauth/kakao', async (req, res) => {
-    const frontendUrl = req.headers.referer ?? ''
+    const frontendUrl = req.headers.referer ?? process.env.FRONTEND_URL
 
     if (!req.query.code) {
       return res.status(400).send('400 Bad Request')
@@ -57,6 +58,11 @@ export function setOAuthStrategies(app: Express) {
 
     const kakaoUserToken = await fetchKakaoUserToken(req.query.code as string)
     console.log('👀 - kakaoUserToken', kakaoUserToken)
+
+    if (kakaoUserToken.error) {
+      return res.status(400).send('400 Bad Request')
+    }
+
     const kakaoUserInfo = await fetchKakaoUserInfo(kakaoUserToken.access_token as string)
     console.log('👀 - kakaoUserInfo', kakaoUserInfo)
 
@@ -72,30 +78,30 @@ export function setOAuthStrategies(app: Express) {
 
       const jwt = await generateJWT({ userId: kakaoUser.id })
 
-      // nickname 또는 phone 정보가 없는 경우
+      // 필수 정보가 없는 경우
       if (!hasRequiredInfo(kakaoUser)) {
         return res.redirect(
-          `${frontendUrl}/oauth/register?${encodeURIComponent(
-            JSON.stringify({ jwt, user: kakaoUser }, null, 2)
-          )}`
+          `${frontendUrl}/oauth/register?${new URLSearchParams({ jwt, ...kakaoUser })}`
         )
       }
 
-      return res.redirect(`${frontendUrl}/oauth?${encodeURIComponent(jwt)}`)
+      return res.redirect(
+        `${frontendUrl}/oauth?${new URLSearchParams({ jwt, uniqueName: kakaoUser.unique_name })}`
+      )
     }
 
     // kakao 소셜 로그인 정보가 없는 경우
     const kakaoAccount = kakaoUserInfo.kakao_account as any
     const { rows } = await poolQuery(registerKakaoUser, [
-      kakaoAccount.profile.nickname,
-      kakaoAccount.profile.profile_image_url,
-      kakaoAccount.email,
-      kakaoAccount.phone,
       null,
+      null,
+      kakaoAccount.email,
+      kakaoAccount.phone_number,
+      kakaoUserInfo.id,
       encodeGender(kakaoAccount.gender),
       kakaoAccount.age_range,
       kakaoAccount.birthday,
-      null,
+      '알파카의 소개가 아직 없어요.',
       kakaoUserInfo.id,
     ])
     const newKakaoUser = rows[0]
@@ -105,17 +111,11 @@ export function setOAuthStrategies(app: Express) {
       return res.redirect(`${frontendUrl}/sorry`)
     }
 
-    const jwt = await generateJWT({ userId: newKakaoUser.id })
+    const queryString = new URLSearchParams({
+      jwt: await generateJWT({ userId: newKakaoUser.id }),
+      phoneNumber: newKakaoUser.phone_number,
+    })
 
-    // nickname 또는 phone 정보가 없는 경우
-    if (!hasRequiredInfo(newKakaoUser)) {
-      return res.redirect(
-        `${frontendUrl}/oauth/register?${encodeURIComponent(
-          JSON.stringify({ jwt, user: newKakaoUser }, null, 2)
-        )}`
-      )
-    }
-
-    return res.redirect(`${frontendUrl}/oauth?${encodeURIComponent(jwt)}`)
+    return res.redirect(`${frontendUrl}/oauth/register?${queryString}`)
   })
 }

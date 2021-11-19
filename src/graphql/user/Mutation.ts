@@ -5,11 +5,13 @@ import type { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
 import { emailRegEx } from '../../utils'
 import { generateJWT } from '../../utils/jwt'
+import { graphqlRelationMapping } from '../common/ORM'
 import { MutationResolvers } from '../generated/graphql'
 import login from './sql/login.sql'
 import logout from './sql/logout.sql'
 import register from './sql/register.sql'
 import unregister from './sql/unregister.sql'
+import updateUser from './sql/updateUser.sql'
 
 export const Mutation: MutationResolvers<ApolloContext> = {
   login: async (_, { uniqueNameOrEmail, passwordHash }, { userId }) => {
@@ -56,9 +58,7 @@ export const Mutation: MutationResolvers<ApolloContext> = {
     ]
 
     const { rows } = await poolQuery(register, registerValues)
-
     const { user_id: newUserId, user_unique_name: userUniqueName } = rows[0]
-
     if (!newUserId) throw new UserInputError('이미 존재하는 이메일 또는 고유 이름입니다.')
 
     return { userUniqueName, jwt: await generateJWT({ userId }) }
@@ -67,8 +67,27 @@ export const Mutation: MutationResolvers<ApolloContext> = {
   unregister: async (_, __, { userId }) => {
     if (!userId) throw new AuthenticationError('로그인되어 있지 않습니다. 로그인 후 시도해주세요.')
 
-    await poolQuery(unregister, [userId])
+    const { rows } = await poolQuery(unregister, [userId])
 
-    return true
+    return graphqlRelationMapping(rows[0], 'user')
+  },
+
+  updateUser: async (_, { input }, { userId }) => {
+    if (!userId) throw new AuthenticationError('로그인되어 있지 않습니다. 로그인 후 시도해주세요.')
+
+    const { rows } = await poolQuery(updateUser, [
+      input.nickname,
+      input.imageUrl,
+      input.email,
+      input.phoneNumber,
+      input.uniqueName,
+      input.gender,
+      input.ageRange,
+      input.birthday,
+      input.bio,
+      userId,
+    ])
+
+    return graphqlRelationMapping(rows[0], 'user')
   },
 }

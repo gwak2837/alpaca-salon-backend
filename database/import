@@ -16,7 +16,7 @@ fi
 
 echo $CONNECTION_STRING_WITH_SSL
 
-psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql
+do_not_print=$(psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql)
 
 # 테이블 순서 중요
 public_tables=(

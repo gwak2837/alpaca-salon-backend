@@ -9,7 +9,9 @@ type Mutation {
   register(input: RegisterInput!): UserAuthentication
 
   "회원탈퇴 시 사용자 정보가 모두 초기화됩"
-  unregister: Boolean!
+  unregister: User
+
+  updateUser(input: UserModificationInput!): User
 }
 
 input RegisterInput {
@@ -23,6 +25,18 @@ input RegisterInput {
   bio: String
   birth: Date
   imageUrl: URL
+}
+
+input UserModificationInput {
+  nickname: NonEmptyString
+  imageUrl: URL
+  email: EmailAddress
+  phoneNumber: NonEmptyString
+  uniqueName: NonEmptyString
+  gender: Gender
+  ageRange: NonEmptyString
+  birthday: NonEmptyString
+  bio: String
 }
 
 type UserAuthentication {

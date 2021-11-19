@@ -42,8 +42,15 @@ export type Comment = {
   user: User
 }
 
+export enum Gender {
+  Female = 'FEMALE',
+  Male = 'MALE',
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
+  createPost?: Maybe<Post>
+  deletePost?: Maybe<Post>
   /** 고유 이름 또는 이메일과 비밀번호를 전송하면 JWT 인증 토큰을 반환함 */
   login?: Maybe<UserAuthentication>
   /** JWT 인증 토큰과 같이 요청하면 로그아웃 성공 여부를 반환함 */
@@ -51,8 +58,17 @@ export type Mutation = {
   /** 회원가입에 필요한 정보를 주면 성공했을 때 인증 토큰을 반환함 */
   register?: Maybe<UserAuthentication>
   /** 회원탈퇴 시 사용자 정보가 모두 초기화됩 */
-  unregister: Scalars['Boolean']
+  unregister?: Maybe<User>
   updatePost?: Maybe<Post>
+  updateUser?: Maybe<User>
+}
+
+export type MutationCreatePostArgs = {
+  input: PostCreationInput
+}
+
+export type MutationDeletePostArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationLoginArgs = {
@@ -66,6 +82,10 @@ export type MutationRegisterArgs = {
 
 export type MutationUpdatePostArgs = {
   input: PostModificationInput
+}
+
+export type MutationUpdateUserArgs = {
+  input: UserModificationInput
 }
 
 /** 기본값: 내림차순 */
@@ -101,6 +121,12 @@ export enum PostCategory {
   Menopause = 'MENOPAUSE',
 }
 
+export type PostCreationInput = {
+  category?: Maybe<PostCategory>
+  contents?: Maybe<Scalars['String']>
+  title?: Maybe<Scalars['String']>
+}
+
 export type PostModificationInput = {
   category?: Maybe<PostCategory>
   contents?: Maybe<Scalars['String']>
@@ -125,7 +151,7 @@ export type Query = {
   /** 좋아요 누른 댓글 */
   likedComments?: Maybe<Array<Comment>>
   /** 인증 토큰과 같이 요청하면 사용자 정보를 반환 */
-  me: User
+  me?: Maybe<User>
   /** 내가 쓴 댓글 */
   myComments?: Maybe<Array<Comment>>
   /** 글 상세 */
@@ -175,29 +201,40 @@ export type RegisterInput = {
 
 export type User = {
   __typename?: 'User'
-  bio?: Maybe<Scalars['String']>
-  birth?: Maybe<Scalars['Date']>
+  ageRange?: Maybe<Scalars['NonEmptyString']>
+  bio?: Maybe<Scalars['NonEmptyString']>
+  birthday?: Maybe<Scalars['NonEmptyString']>
   creationTime: Scalars['DateTime']
   email: Scalars['EmailAddress']
   feedCount: Scalars['Int']
   followerCount: Scalars['Int']
   followingCount: Scalars['Int']
+  gender?: Maybe<Gender>
   id: Scalars['UUID']
   imageUrl?: Maybe<Scalars['URL']>
-  isEmailVerified: Scalars['Boolean']
-  isStarUser: Scalars['Boolean']
   modificationTime: Scalars['DateTime']
-  name: Scalars['NonEmptyString']
-  nickname?: Maybe<Scalars['String']>
-  phone: Scalars['NonEmptyString']
+  nickname: Scalars['NonEmptyString']
+  phone?: Maybe<Scalars['NonEmptyString']>
   providers: Array<Provider>
-  uniqueName: Scalars['NonEmptyString']
+  uniqueName?: Maybe<Scalars['NonEmptyString']>
 }
 
 export type UserAuthentication = {
   __typename?: 'UserAuthentication'
   jwt: Scalars['JWT']
   userUniqueName: Scalars['NonEmptyString']
+}
+
+export type UserModificationInput = {
+  ageRange?: Maybe<Scalars['NonEmptyString']>
+  bio?: Maybe<Scalars['String']>
+  birthday?: Maybe<Scalars['NonEmptyString']>
+  email?: Maybe<Scalars['EmailAddress']>
+  gender?: Maybe<Gender>
+  imageUrl?: Maybe<Scalars['URL']>
+  nickname?: Maybe<Scalars['NonEmptyString']>
+  phoneNumber?: Maybe<Scalars['NonEmptyString']>
+  uniqueName?: Maybe<Scalars['NonEmptyString']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -289,6 +326,7 @@ export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']>
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>
   EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']>
+  Gender: Gender
   ID: ResolverTypeWrapper<Scalars['ID']>
   Int: ResolverTypeWrapper<Scalars['Int']>
   JWT: ResolverTypeWrapper<Scalars['JWT']>
@@ -302,6 +340,7 @@ export type ResolversTypes = {
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>
   Post: ResolverTypeWrapper<Post>
   PostCategory: PostCategory
+  PostCreationInput: PostCreationInput
   PostModificationInput: PostModificationInput
   Provider: Provider
   Query: ResolverTypeWrapper<{}>
@@ -311,6 +350,7 @@ export type ResolversTypes = {
   UUID: ResolverTypeWrapper<Scalars['UUID']>
   User: ResolverTypeWrapper<User>
   UserAuthentication: ResolverTypeWrapper<UserAuthentication>
+  UserModificationInput: UserModificationInput
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -331,6 +371,7 @@ export type ResolversParentTypes = {
   Pagination: Pagination
   PositiveInt: Scalars['PositiveInt']
   Post: Post
+  PostCreationInput: PostCreationInput
   PostModificationInput: PostModificationInput
   Query: {}
   RegisterInput: RegisterInput
@@ -339,6 +380,7 @@ export type ResolversParentTypes = {
   UUID: Scalars['UUID']
   User: User
   UserAuthentication: UserAuthentication
+  UserModificationInput: UserModificationInput
 }
 
 export type CommentResolvers<
@@ -393,6 +435,18 @@ export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
+  createPost?: Resolver<
+    Maybe<ResolversTypes['Post']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreatePostArgs, 'input'>
+  >
+  deletePost?: Resolver<
+    Maybe<ResolversTypes['Post']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeletePostArgs, 'id'>
+  >
   login?: Resolver<
     Maybe<ResolversTypes['UserAuthentication']>,
     ParentType,
@@ -406,12 +460,18 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationRegisterArgs, 'input'>
   >
-  unregister?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  unregister?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   updatePost?: Resolver<
     Maybe<ResolversTypes['Post']>,
     ParentType,
     ContextType,
     RequireFields<MutationUpdatePostArgs, 'input'>
+  >
+  updateUser?: Resolver<
+    Maybe<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserArgs, 'input'>
   >
 }
 
@@ -459,7 +519,7 @@ export type QueryResolvers<
     RequireFields<QueryIsUniqueNameUniqueArgs, 'uniqueName'>
   >
   likedComments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>
-  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   myComments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>
   post?: Resolver<
     Maybe<ResolversTypes['Post']>,
@@ -499,23 +559,22 @@ export type UserResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
 > = {
-  bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  birth?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>
+  ageRange?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  bio?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  birthday?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   email?: Resolver<ResolversTypes['EmailAddress'], ParentType, ContextType>
   feedCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   followerCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   followingCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  gender?: Resolver<Maybe<ResolversTypes['Gender']>, ParentType, ContextType>
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>
   imageUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>
-  isEmailVerified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
-  isStarUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
-  name?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
-  nickname?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  phone?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
+  nickname?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
+  phone?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
   providers?: Resolver<Array<ResolversTypes['Provider']>, ParentType, ContextType>
-  uniqueName?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
+  uniqueName?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }
 

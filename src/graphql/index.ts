@@ -6,7 +6,7 @@ import { mergeResolvers } from '@graphql-tools/merge'
 import * as postMutationResolver from './post/Mutation'
 import * as postObjectResolver from './post/Object'
 import * as postQueryResolver from './post/Query'
-// import * as userMutationResolver from './user/Mutation'
+import * as userMutationResolver from './user/Mutation'
 // import * as userObjectResolver from './user/Object'
 import * as userQueryResolver from './user/Query'
 
@@ -16,7 +16,7 @@ const resolversArray = [
   postMutationResolver,
   postObjectResolver,
   postQueryResolver,
-  // userMutationResolver,
+  userMutationResolver,
   // userObjectResolver,
   userQueryResolver,
 ]

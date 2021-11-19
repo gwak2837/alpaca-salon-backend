@@ -27,6 +27,11 @@ scalar DateTime
 
 scalar EmailAddress
 
+enum Gender {
+  FEMALE
+  MALE
+}
+
 scalar JWT
 
 scalar LastValue
@@ -36,6 +41,9 @@ scalar Latitude
 scalar Longitude
 
 type Mutation {
+  createPost(input: PostCreationInput!): Post
+  deletePost(id: ID!): Post
+
   """
   고유 이름 또는 이메일과 비밀번호를 전송하면 JWT 인증 토큰을 반환함
   """
@@ -54,8 +62,9 @@ type Mutation {
   """
   회원탈퇴 시 사용자 정보가 모두 초기화됩
   """
-  unregister: Boolean!
+  unregister: User
   updatePost(input: PostModificationInput!): Post
+  updateUser(input: UserModificationInput!): User
 }
 
 scalar NonEmptyString
@@ -105,6 +114,12 @@ enum PostCategory {
   MENOPAUSE
 }
 
+input PostCreationInput {
+  category: PostCategory
+  contents: String
+  title: String
+}
+
 input PostModificationInput {
   category: PostCategory
   contents: String
@@ -141,7 +156,7 @@ type Query {
   """
   인증 토큰과 같이 요청하면 사용자 정보를 반환
   """
-  me: User!
+  me: User
 
   """
   내가 쓴 댓글
@@ -185,26 +200,37 @@ scalar URL
 scalar UUID
 
 type User {
-  bio: String
-  birth: Date
+  ageRange: NonEmptyString
+  bio: NonEmptyString
+  birthday: NonEmptyString
   creationTime: DateTime!
   email: EmailAddress!
   feedCount: Int!
   followerCount: Int!
   followingCount: Int!
+  gender: Gender
   id: UUID!
   imageUrl: URL
-  isEmailVerified: Boolean!
-  isStarUser: Boolean!
   modificationTime: DateTime!
-  name: NonEmptyString!
-  nickname: String
-  phone: NonEmptyString!
+  nickname: NonEmptyString!
+  phone: NonEmptyString
   providers: [Provider!]!
-  uniqueName: NonEmptyString!
+  uniqueName: NonEmptyString
 }
 
 type UserAuthentication {
   jwt: JWT!
   userUniqueName: NonEmptyString!
+}
+
+input UserModificationInput {
+  ageRange: NonEmptyString
+  bio: String
+  birthday: NonEmptyString
+  email: EmailAddress
+  gender: Gender
+  imageUrl: URL
+  nickname: NonEmptyString
+  phoneNumber: NonEmptyString
+  uniqueName: NonEmptyString
 }

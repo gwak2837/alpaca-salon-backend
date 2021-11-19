@@ -1,5 +1,15 @@
 type Mutation {
+  createPost(input: PostCreationInput!): Post
+
   updatePost(input: PostModificationInput!): Post
+
+  deletePost(id: ID!): Post
+}
+
+input PostCreationInput {
+  category: PostCategory
+  title: String
+  contents: String
 }
 
 input PostModificationInput {

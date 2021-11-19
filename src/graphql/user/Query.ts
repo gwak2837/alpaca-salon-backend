@@ -11,10 +11,7 @@ export const Query: QueryResolvers<ApolloContext> = {
   me: async (_, __, { userId }) => {
     if (!userId) throw new AuthenticationError('로그인되어 있지 않습니다. 로그인 후 시도해주세요.')
 
-    const sql = me
-    const values = [userId]
-
-    const { rows } = await poolQuery(sql, values)
+    const { rows } = await poolQuery(me, [userId])
 
     return graphqlRelationMapping(rows[0], 'user')
   },

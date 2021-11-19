@@ -1,6 +1,4 @@
 SELECT id,
-  email,
-  name,
-  nickname
+  unique_name
 FROM "user"
 WHERE id = $1
