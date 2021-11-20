@@ -29,7 +29,7 @@ CREATE TABLE "user" (
   nickname varchar(50),
   image_url text,
   gender int,
-  age_range varchar(5),
+  birthyear varchar(4),
   birthday varchar(4),
   bio varchar(100),
   --

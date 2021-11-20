@@ -4,4 +4,6 @@ type Query {
 
   "사용자 고유 이름 중복 여부 검사"
   isUniqueNameUnique(uniqueName: NonEmptyString!): Boolean!
+
+  userByName(uniqueName: NonEmptyString!): User
 }

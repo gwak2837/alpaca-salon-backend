@@ -137,9 +137,7 @@ export type PostModificationInput = {
 /** OAuth 공급자 */
 export enum Provider {
   AlpacaSalon = 'ALPACA_SALON',
-  Google = 'GOOGLE',
   Kakao = 'KAKAO',
-  Naver = 'NAVER',
 }
 
 export type Query = {
@@ -162,6 +160,7 @@ export type Query = {
   searchPosts?: Maybe<Array<Post>>
   /** 대댓글 */
   subComments?: Maybe<Array<Maybe<Comment>>>
+  userByName?: Maybe<User>
 }
 
 export type QueryCommentsByPostArgs = {
@@ -188,6 +187,10 @@ export type QuerySubCommentsArgs = {
   id: Scalars['ID']
 }
 
+export type QueryUserByNameArgs = {
+  uniqueName: Scalars['NonEmptyString']
+}
+
 export type RegisterInput = {
   bio?: Maybe<Scalars['String']>
   birth?: Maybe<Scalars['Date']>
@@ -201,20 +204,21 @@ export type RegisterInput = {
 
 export type User = {
   __typename?: 'User'
-  ageRange?: Maybe<Scalars['NonEmptyString']>
   bio?: Maybe<Scalars['NonEmptyString']>
   birthday?: Maybe<Scalars['NonEmptyString']>
+  birthyear?: Maybe<Scalars['Int']>
   creationTime: Scalars['DateTime']
-  email: Scalars['EmailAddress']
+  email?: Maybe<Scalars['EmailAddress']>
   feedCount: Scalars['Int']
   followerCount: Scalars['Int']
   followingCount: Scalars['Int']
   gender?: Maybe<Gender>
   id: Scalars['UUID']
   imageUrl?: Maybe<Scalars['URL']>
+  likedCount: Scalars['Int']
   modificationTime: Scalars['DateTime']
-  nickname: Scalars['NonEmptyString']
-  phone?: Maybe<Scalars['NonEmptyString']>
+  nickname?: Maybe<Scalars['NonEmptyString']>
+  phoneNumber?: Maybe<Scalars['NonEmptyString']>
   providers: Array<Provider>
   uniqueName?: Maybe<Scalars['NonEmptyString']>
 }
@@ -545,6 +549,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QuerySubCommentsArgs, 'id'>
   >
+  userByName?: Resolver<
+    Maybe<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryUserByNameArgs, 'uniqueName'>
+  >
 }
 
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
@@ -559,20 +569,21 @@ export type UserResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
 > = {
-  ageRange?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
   bio?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
   birthday?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  birthyear?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
-  email?: Resolver<ResolversTypes['EmailAddress'], ParentType, ContextType>
+  email?: Resolver<Maybe<ResolversTypes['EmailAddress']>, ParentType, ContextType>
   feedCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   followerCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   followingCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   gender?: Resolver<Maybe<ResolversTypes['Gender']>, ParentType, ContextType>
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>
   imageUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>
+  likedCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
-  nickname?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
-  phone?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  nickname?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  phoneNumber?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
   providers?: Resolver<Array<ResolversTypes['Provider']>, ParentType, ContextType>
   uniqueName?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>

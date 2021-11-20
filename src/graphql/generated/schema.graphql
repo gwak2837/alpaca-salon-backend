@@ -132,9 +132,7 @@ OAuth 공급자
 """
 enum Provider {
   ALPACA_SALON
-  GOOGLE
   KAKAO
-  NAVER
 }
 
 type Query {
@@ -182,6 +180,7 @@ type Query {
   대댓글
   """
   subComments(id: ID!): [Comment]
+  userByName(uniqueName: NonEmptyString!): User
 }
 
 input RegisterInput {
@@ -200,20 +199,21 @@ scalar URL
 scalar UUID
 
 type User {
-  ageRange: NonEmptyString
   bio: NonEmptyString
   birthday: NonEmptyString
+  birthyear: Int
   creationTime: DateTime!
-  email: EmailAddress!
+  email: EmailAddress
   feedCount: Int!
   followerCount: Int!
   followingCount: Int!
   gender: Gender
   id: UUID!
   imageUrl: URL
+  likedCount: Int!
   modificationTime: DateTime!
-  nickname: NonEmptyString!
-  phone: NonEmptyString
+  nickname: NonEmptyString
+  phoneNumber: NonEmptyString
   providers: [Provider!]!
   uniqueName: NonEmptyString
 }

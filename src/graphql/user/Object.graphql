@@ -2,30 +2,29 @@ type User {
   id: UUID!
   creationTime: DateTime!
   modificationTime: DateTime!
-  email: EmailAddress!
-  nickname: NonEmptyString!
   providers: [Provider!]!
 
   # nullable
-  ageRange: NonEmptyString
   bio: NonEmptyString
+  birthyear: Int
   birthday: NonEmptyString
+  email: EmailAddress
   gender: Gender
   imageUrl: URL
-  phone: NonEmptyString
+  nickname: NonEmptyString
+  phoneNumber: NonEmptyString
   uniqueName: NonEmptyString
 
-  # 통계
+  # from other table
   feedCount: Int!
   followerCount: Int!
   followingCount: Int!
+  likedCount: Int!
 }
 
 "OAuth 공급자"
 enum Provider {
   ALPACA_SALON
-  GOOGLE
-  NAVER
   KAKAO
 }
 
