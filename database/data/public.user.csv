@@ -1,4 +1,4 @@
-id,creation_time,modification_time,email,phone_number,unique_name,nickname,image_url,gender,age_range,birthday,bio,google_oauth,naver_oauth,kakao_oauth,password_hash,validation_time
+id,creation_time,modification_time,email,phone_number,unique_name,nickname,image_url,gender,birthyear,birthday,bio,google_oauth,naver_oauth,kakao_oauth,password_hash,validation_time
 d4dbb193-389c-4c0d-b6b6-8adb9d279c5a,2021-11-10 06:19:19.819337+00,2021-11-10 06:19:19.819337+00,,,unique_name1,nickname1,,,,,,,,,password_hash,2021-11-10 06:19:19.819337+00
 5349fcd3-264b-4f26-9203-f80f6ec6a8b5,2021-11-12 06:55:17.03924+00,2021-11-12 06:55:17.03924+00,,,bunhong,분홍꽃,,,,,,,,,pass,2021-11-12 06:55:17.03924+00
 ba74b15a-2546-479b-bb46-d04554cd075e,2021-11-12 06:55:33.498637+00,2021-11-12 06:55:33.498637+00,,,albi,알비,,,,,,,,,pass,2021-11-12 06:55:33.498637+00
