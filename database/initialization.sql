@@ -126,15 +126,11 @@ CREATE TABLE deleted.user (
   creation_time timestamptz NOT NULL,
   modification_time timestamptz NOT NULL,
   deletion_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  nickname varchar(50) NOT NULL,
-  image_url text,
   email varchar(50) UNIQUE,
   phone_number varchar(20) UNIQUE,
-  unique_name varchar(50) UNIQUE,
   gender int,
-  age_range varchar(5),
+  birthyear varchar(4),
   birthday varchar(4),
-  bio varchar(100),
   --
   google_oauth text UNIQUE,
   naver_oauth text UNIQUE,
@@ -185,13 +181,36 @@ CREATE TABLE deleted.event (
 );
 
 CREATE FUNCTION delete_user (user_id uuid, out deleted_user_id uuid) LANGUAGE plpgsql AS $$ BEGIN
-INSERT INTO deleted.user
-SELECT *
+INSERT INTO deleted.user(
+    id,
+    creation_time,
+    modification_time,
+    email,
+    phone_number,
+    gender,
+    birthyear,
+    birthday,
+    google_oauth,
+    naver_oauth,
+    kakao_oauth
+  )
+SELECT id,
+  creation_time,
+  modification_time,
+  email,
+  phone_number,
+  gender,
+  birthyear,
+  birthday,
+  google_oauth,
+  naver_oauth,
+  kakao_oauth
 FROM "user"
 WHERE id = user_id;
 
 DELETE FROM "user"
-WHERE id = user_id;
+WHERE id = user_id
+RETURNING id INTO deleted_user_id;
 
 END $$;
 
