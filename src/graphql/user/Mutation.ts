@@ -1,5 +1,6 @@
 import { AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server-express'
 import { compare, genSalt, hash } from 'bcryptjs'
+import fetch from 'node-fetch'
 
 import type { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
@@ -7,6 +8,7 @@ import { emailRegEx } from '../../utils'
 import { generateJWT } from '../../utils/jwt'
 import { graphqlRelationMapping } from '../common/ORM'
 import { MutationResolvers } from '../generated/graphql'
+import getUserKakaoId from './sql/getUserKakaoId.sql'
 import login from './sql/login.sql'
 import logout from './sql/logout.sql'
 import register from './sql/register.sql'
@@ -46,7 +48,7 @@ export const Mutation: MutationResolvers<ApolloContext> = {
 
     const passwordHashWithSalt = await hash(input.passwordHash, await genSalt())
 
-    const registerValues = [
+    const { rows } = await poolQuery(register, [
       input.uniqueName,
       input.email,
       passwordHashWithSalt,
@@ -55,9 +57,7 @@ export const Mutation: MutationResolvers<ApolloContext> = {
       input.bio,
       input.birth,
       input.imageUrl,
-    ]
-
-    const { rows } = await poolQuery(register, registerValues)
+    ])
     const { user_id: newUserId, user_unique_name: userUniqueName } = rows[0]
     if (!newUserId) throw new UserInputError('이미 존재하는 이메일 또는 고유 이름입니다.')
 
@@ -66,6 +66,17 @@ export const Mutation: MutationResolvers<ApolloContext> = {
 
   unregister: async (_, __, { userId }) => {
     if (!userId) throw new AuthenticationError('로그인되어 있지 않습니다. 로그인 후 시도해주세요.')
+
+    const user = await poolQuery(getUserKakaoId, [userId])
+
+    await fetch('https://kapi.kakao.com/v1/user/unlink', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `KakaoAK ${process.env.KAKAO_ADMIN_KEY}`,
+      },
+      body: `target_id_type=user_id&target_id=${user.rows[0].kakao_oauth}`,
+    })
 
     const { rows } = await poolQuery(unregister, [userId])
 

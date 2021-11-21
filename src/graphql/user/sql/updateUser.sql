@@ -38,14 +38,24 @@ SET modification_time = CURRENT_TIMESTAMP,
   END
 WHERE id = $10
   AND (
-    nickname <> $1
-    OR image_url <> $2
-    OR email <> $3
-    OR phone_number <> $4
-    OR unique_name <> $5
-    OR gender <> $6
-    OR birthyear <> $7
-    OR birthday <> $8
-    OR bio <> $9
+    nickname IS DISTINCT
+    FROM $1
+      OR image_url IS DISTINCT
+    FROM $2
+      OR email IS DISTINCT
+    FROM $3
+      OR phone_number IS DISTINCT
+    FROM $4
+      OR unique_name IS DISTINCT
+    FROM $5
+      OR gender IS DISTINCT
+    FROM $6
+      OR birthyear IS DISTINCT
+    FROM $7
+      OR birthday IS DISTINCT
+    FROM $8
+      OR bio IS DISTINCT
+    FROM $9
   )
-RETURNING *
+RETURNING id,
+  unique_name

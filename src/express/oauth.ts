@@ -81,7 +81,11 @@ export function setOAuthStrategies(app: Express) {
       // 필수 정보가 없는 경우
       if (!hasRequiredInfo(kakaoUser)) {
         return res.redirect(
-          `${frontendUrl}/oauth/register?${new URLSearchParams({ jwt, ...kakaoUser })}`
+          `${frontendUrl}/oauth/register?${new URLSearchParams({
+            jwt,
+            uniqueName: kakaoUser.unique_name,
+            phoneNumber: kakaoUser.phone_number,
+          })}`
         )
       }
 
