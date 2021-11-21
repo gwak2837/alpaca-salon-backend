@@ -1,4 +1,4 @@
 UPDATE "user"
-SET modification_time = NOW(),
-  logout_time = NOW()
-WHERE id = $1;
+SET modification_time = CURRENT_TIMESTAMP,
+  validation_time = CURRENT_TIMESTAMP
+WHERE id = $1
