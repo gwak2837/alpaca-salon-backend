@@ -5,7 +5,7 @@ INSERT INTO "user" (
     phone_number,
     unique_name,
     gender,
-    age_range,
+    birthyear,
     birthday,
     bio,
     kakao_oauth,

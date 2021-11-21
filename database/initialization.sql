@@ -126,15 +126,15 @@ CREATE TABLE deleted.user (
   creation_time timestamptz NOT NULL,
   modification_time timestamptz NOT NULL,
   deletion_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  email varchar(50) UNIQUE,
-  phone_number varchar(20) UNIQUE,
+  email varchar(50),
+  phone_number varchar(20),
   gender int,
   birthyear varchar(4),
   birthday varchar(4),
   --
-  google_oauth text UNIQUE,
-  naver_oauth text UNIQUE,
-  kakao_oauth text UNIQUE
+  google_oauth text,
+  naver_oauth text,
+  kakao_oauth text
 );
 
 CREATE TABLE deleted.post (

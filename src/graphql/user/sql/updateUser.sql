@@ -24,8 +24,8 @@ SET modification_time = CURRENT_TIMESTAMP,
     WHEN $6 IS NULL THEN gender
     ELSE $6
   END,
-  age_range = CASE
-    WHEN $7 IS NULL THEN age_range
+  birthyear = CASE
+    WHEN $7 IS NULL THEN birthyear
     ELSE $7
   END,
   birthday = CASE
@@ -44,7 +44,7 @@ WHERE id = $10
     OR phone_number <> $4
     OR unique_name <> $5
     OR gender <> $6
-    OR age_range <> $7
+    OR birthyear <> $7
     OR birthday <> $8
     OR bio <> $9
   )
