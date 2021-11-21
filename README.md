@@ -52,8 +52,13 @@ CONNECTION_STRING=postgresql://DB계정이름:DB계정암호@DB서버주소:포�
 
 JWT_SECRET_KEY=임의의문자열
 
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+KAKAO_REST_API_KEY=
+KAKAO_ADMIN_KEY=
+
 FRONTEND_URL=
-BACKEND_URL=
 
 # for `yarn generate-db`
 POSTGRES_DB=DB이름
@@ -212,6 +217,49 @@ $ docker-compose up --detach --build --force-recreate
 
 Cloud Run이 GitHub 저장소 변경 사항을 자동으로 감지하기 때문에 GitHub로 commit을 push할 때마다 Cloud Run에 자동으로 배포됩니다.
 
+### GCP Cloud SQL
+
+#### Configure database
+
+```sql
+CREATE DATABASE alpaca_salon OWNER alpaca_salon TEMPLATE template0 LC_COLLATE "C" LC_CTYPE "ko_KR.UTF-8";
+\c alpaca_salon postgres
+ALTER SCHEMA public OWNER TO alpaca_salon;
+```
+
+#### Connect to Cloud SQL with proxy
+
+```
+gcloud auth login
+gcloud config set project $PROJECT_NAME
+
+curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64
+chmod +x cloud_sql_proxy
+./cloud_sql_proxy -instances=$CONNECTION_NAME=tcp:54321
+
+psql "host=127.0.0.1 port=54321 sslmode=disable dbname=$POSTGRES_DB user=$POSTGRES_USER"
+```
+
+#### Database schema update
+
+```bash
+yarn export-db .env
+initialization.sql
+CSV 데이터 구조 수정
+yarn import-db .env
+```
+
+### GCP Cloud Function
+
+#### Slack
+
+```bash
+# https://github.com/rmfpdlxmtidl/google-cloud-build-slack
+export SLACK_WEBHOOK_URL=
+export PROJECT_ID=
+./setup.sh
+```
+
 ## Scripts
 
 #### `test`
@@ -242,38 +290,12 @@ $ yarn import-db {환경 변수 파일 위치}
 
 CSV 파일을 PostgreSQL 데이터베이스에 삽입합니다.
 
-## Localhost Database
-
-```sql
-CREATE DATABASE alpaca_salon OWNER alpaca_salon TEMPLATE template0 LC_COLLATE "C" LC_CTYPE "ko_KR.UTF-8";
-\c alpaca_salon postgres
-ALTER SCHEMA public OWNER TO alpaca_salon;
-```
-
-#### Connect to Cloud SQL with proxy
-
-```
-gcloud auth login
-gcloud config set project $PROJECT_NAME
-
-curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64
-chmod +x cloud_sql_proxy
-./cloud_sql_proxy -instances=$CONNECTION_NAME=tcp:54321
-
-psql "host=127.0.0.1 port=54321 sslmode=disable dbname=$POSTGRES_DB user=$POSTGRES_USER"
-```
-
 ## Slack
 
-```bash
+```
 https://slack.github.com/
 
 # https://github.com/integrations/slack#subscribing-and-unsubscribing
 /github subscribe rmfpdlxmtidl/alpaca-salon-backend commits:* reviews comments
 /github unsubscribe rmfpdlxmtidl/alpaca-salon-backend deployments
-
-# https://github.com/rmfpdlxmtidl/google-cloud-build-slack
-export SLACK_WEBHOOK_URL=
-export PROJECT_ID=
-./setup.sh
 ```
