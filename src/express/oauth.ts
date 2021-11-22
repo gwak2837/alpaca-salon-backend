@@ -101,7 +101,6 @@ export function setOAuthStrategies(app: Express) {
       null,
       kakaoAccount.email,
       kakaoAccount.phone_number,
-      null,
       encodeGender(kakaoAccount.gender),
       kakaoAccount.birthyear,
       kakaoAccount.birthday,
