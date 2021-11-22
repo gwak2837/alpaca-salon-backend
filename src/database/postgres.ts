@@ -5,15 +5,6 @@ import { formatDate } from '../utils'
 
 export const pool = new Pool({
   connectionString: process.env.CONNECTION_STRING,
-  // ...(process.env.NODE_ENV === 'production' && {
-  //   ssl: {
-  //     rejectUnauthorized: true,
-  //     ca: `-----BEGIN CERTIFICATE-----\n${process.env.CA_CERTIFICATE}\n-----END CERTIFICATE-----`,
-  //     checkServerIdentity: () => {
-  //       return undefined
-  //     },
-  //   },
-  // }),
 })
 
 export async function poolQuery(query: string, values?: unknown[]) {
@@ -24,7 +15,8 @@ export async function poolQuery(query: string, values?: unknown[]) {
 
   return pool.query(query, values).catch((error) => {
     if (process.env.NODE_ENV === 'production') {
-      throw new DatabaseQueryError('Database query error')
+      console.error(error)
+      throw new DatabaseQueryError('500 Database query error')
     } else {
       throw new DatabaseQueryError(error)
     }
