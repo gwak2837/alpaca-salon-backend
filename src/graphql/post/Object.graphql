@@ -19,6 +19,7 @@ type Post {
 }
 
 enum PostCategory {
+  UNDEFINED
   MENOPAUSE
   FREE_TOPIC
 }

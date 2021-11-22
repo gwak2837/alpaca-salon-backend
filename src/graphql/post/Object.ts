@@ -1,4 +1,5 @@
 export const PostCategory = {
-  MENOPAUSE: 0,
-  FREE_TOPIC: 1,
+  UNDEFINED: 0,
+  MENOPAUSE: 1,
+  FREE_TOPIC: 2,
 }

@@ -10,7 +10,7 @@ SELECT post.id,
 FROM post
   JOIN "user" ON "user".id = post.user_id
   LEFT JOIN "comment" ON "comment".post_id = post.id
-WHERE post.id < $1
 GROUP BY post.id,
   "user".id
-FETCH FIRST $2 ROWS ONLY
+ORDER BY id DESC
+FETCH FIRST $1 ROWS ONLY

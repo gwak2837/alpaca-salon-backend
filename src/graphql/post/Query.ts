@@ -1,5 +1,6 @@
 import type { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
+import { buildSelect } from '../../utils/sql'
 import { graphqlRelationMapping } from '../common/ORM'
 import { QueryResolvers } from '../generated/graphql'
 import post from './sql/post.sql'
@@ -17,7 +18,16 @@ export const Query: QueryResolvers<ApolloContext> = {
   },
 
   posts: async (_, { pagination }) => {
-    const { rows } = await poolQuery(posts, [pagination.lastId, pagination.limit])
+    let sql = posts
+    const values = [pagination.limit]
+
+    // Pagination
+    if (pagination.lastId) {
+      sql = buildSelect(sql, 'WHERE', 'post.id < $1')
+      values.push(pagination.lastId)
+    }
+
+    const { rows } = await poolQuery(sql, values)
     return rows.map((row) => graphqlRelationMapping(row, 'post'))
   },
 

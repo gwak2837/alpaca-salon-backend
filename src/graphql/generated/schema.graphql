@@ -30,6 +30,8 @@ scalar EmailAddress
 enum Gender {
   FEMALE
   MALE
+  OTHER
+  UNKNOWN
 }
 
 scalar JWT
@@ -45,19 +47,9 @@ type Mutation {
   deletePost(id: ID!): Post
 
   """
-  고유 이름 또는 이메일과 비밀번호를 전송하면 JWT 인증 토큰을 반환함
-  """
-  login(passwordHash: NonEmptyString!, uniqueNameOrEmail: NonEmptyString!): UserAuthentication
-
-  """
   JWT 인증 토큰과 같이 요청하면 로그아웃 성공 여부를 반환함
   """
   logout: Boolean!
-
-  """
-  회원가입에 필요한 정보를 주면 성공했을 때 인증 토큰을 반환함
-  """
-  register(input: RegisterInput!): UserAuthentication
 
   """
   회원탈퇴 시 사용자 정보가 모두 초기화됩
@@ -112,6 +104,7 @@ type Post {
 enum PostCategory {
   FREE_TOPIC
   MENOPAUSE
+  UNDEFINED
 }
 
 input PostCreationInput {
@@ -142,9 +135,9 @@ type Query {
   commentsByPost(postId: ID!): [Comment]
 
   """
-  사용자 고유 이름 중복 여부 검사
+  사용자 닉네임 중복 여부 검사
   """
-  isUniqueNameUnique(uniqueName: NonEmptyString!): Boolean!
+  isNicknameUnique(nickname: NonEmptyString!): Boolean!
 
   """
   좋아요 누른 댓글
@@ -152,7 +145,7 @@ type Query {
   likedComments: [Comment!]
 
   """
-  인증 토큰과 같이 요청하면 사용자 정보를 반환
+  현재 로그인된(JWT) 사용자 정보를 반환
   """
   me: User
 
@@ -180,18 +173,11 @@ type Query {
   대댓글
   """
   subComments(id: ID!): [Comment]
-  userByName(uniqueName: NonEmptyString!): User
-}
 
-input RegisterInput {
-  bio: String
-  birth: Date
-  email: EmailAddress!
-  imageUrl: URL
-  name: NonEmptyString!
-  passwordHash: NonEmptyString!
-  phone: NonEmptyString!
-  uniqueName: NonEmptyString!
+  """
+  닉네임으로 사용자 검색
+  """
+  userByNickname(nickname: NonEmptyString!): User
 }
 
 scalar URL
@@ -204,9 +190,6 @@ type User {
   birthyear: Int
   creationTime: DateTime!
   email: EmailAddress
-  feedCount: Int!
-  followerCount: Int!
-  followingCount: Int!
   gender: Gender
   id: UUID!
   imageUrl: URL
@@ -215,12 +198,11 @@ type User {
   nickname: NonEmptyString
   phoneNumber: NonEmptyString
   providers: [Provider!]!
-  uniqueName: NonEmptyString
 }
 
 type UserAuthentication {
   jwt: JWT!
-  userUniqueName: NonEmptyString!
+  nickname: NonEmptyString!
 }
 
 input UserModificationInput {
@@ -232,5 +214,4 @@ input UserModificationInput {
   imageUrl: URL
   nickname: NonEmptyString
   phoneNumber: NonEmptyString
-  uniqueName: NonEmptyString
 }

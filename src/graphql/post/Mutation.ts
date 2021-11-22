@@ -4,6 +4,7 @@ import type { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
 import { graphqlRelationMapping } from '../common/ORM'
 import { MutationResolvers } from '../generated/graphql'
+import { PostCategory } from './Object'
 import createPost from './sql/createPost.sql'
 import deletePost from './sql/deletePost.sql'
 import updatePost from './sql/updatePost.sql'
@@ -13,7 +14,7 @@ export const Mutation: MutationResolvers<ApolloContext> = {
     if (!userId) throw new AuthenticationError('로그인 후 시도해주세요.')
 
     const { rows } = await poolQuery(createPost, [
-      input.category,
+      input.category ?? PostCategory.UNDEFINED,
       input.title,
       input.contents,
       userId,
