@@ -4,7 +4,7 @@ import { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
 import { graphqlRelationMapping } from '../common/ORM'
 import { QueryResolvers } from '../generated/graphql'
-import isUniqueNameUnique from './sql/isUniqueNameUnique.sql'
+import isNicknameUnique from './sql/isNicknameUnique.sql'
 import me from './sql/me.sql'
 import userByName from './sql/userByName.sql'
 
@@ -17,17 +17,17 @@ export const Query: QueryResolvers<ApolloContext> = {
     return graphqlRelationMapping(rows[0], 'user')
   },
 
-  isUniqueNameUnique: async (_, { uniqueName }) => {
-    const { rowCount } = await poolQuery(isUniqueNameUnique, [uniqueName])
+  isNicknameUnique: async (_, { nickname }) => {
+    const { rowCount } = await poolQuery(isNicknameUnique, [nickname])
 
     return rowCount === 0
   },
 
-  userByName: async (_, { uniqueName }) => {
-    const { rowCount, rows } = await poolQuery(userByName, [uniqueName])
+  userByNickname: async (_, { nickname }) => {
+    const { rowCount, rows } = await poolQuery(userByName, [nickname])
 
     if (rowCount === 0)
-      throw new UserInputError(`uniqueName: ${uniqueName} 의 사용자를 찾을 수 없습니다.`)
+      throw new UserInputError(`nickname: ${nickname} 의 사용자를 찾을 수 없습니다.`)
 
     return graphqlRelationMapping(rows[0], 'user')
   },

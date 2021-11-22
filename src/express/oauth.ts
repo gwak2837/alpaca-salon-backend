@@ -23,7 +23,7 @@ function verifyTargetCustomer(user: any) {
 }
 
 function hasRequiredInfo(user: any) {
-  return user.nickname && user.phone_number && user.unique_name
+  return user.nickname && user.phone_number
 }
 
 async function fetchKakaoUserToken(code: string) {
@@ -83,14 +83,14 @@ export function setOAuthStrategies(app: Express) {
         return res.redirect(
           `${frontendUrl}/oauth/register?${new URLSearchParams({
             jwt,
-            uniqueName: kakaoUser.unique_name,
+            nickname: kakaoUser.nickname,
             phoneNumber: kakaoUser.phone_number,
           })}`
         )
       }
 
       return res.redirect(
-        `${frontendUrl}/oauth?${new URLSearchParams({ jwt, uniqueName: kakaoUser.unique_name })}`
+        `${frontendUrl}/oauth?${new URLSearchParams({ jwt, nickname: kakaoUser.nickname })}`
       )
     }
 

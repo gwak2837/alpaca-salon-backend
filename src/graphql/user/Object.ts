@@ -5,9 +5,10 @@ import { UserResolvers } from '../generated/graphql'
 import { decodeProviders } from './ORM'
 
 export const Gender = {
-  OTHER: 0,
+  UNKNOWN: 0,
   MALE: 1,
   FEMALE: 2,
+  OTHER: 3,
 }
 
 function authenticateUser(loginedUserId: ApolloContext['userId'], targetUserId: string) {

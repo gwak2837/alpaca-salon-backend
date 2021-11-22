@@ -1,4 +1,4 @@
 SELECT id,
-  unique_name
+  nickname
 FROM "user"
 WHERE id = $1

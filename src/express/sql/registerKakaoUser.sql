@@ -2,9 +2,7 @@ INSERT INTO "user" (
     nickname,
     image_url,
     email,
-    phone_number,
-    unique_name,
-    gender,
+    phone_number gender,
     birthyear,
     birthday,
     bio,
@@ -21,7 +19,6 @@ VALUES(
     $7,
     $8,
     $9,
-    $10,
     'kakao'
   )
 RETURNING id,

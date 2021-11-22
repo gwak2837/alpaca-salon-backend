@@ -13,12 +13,8 @@ type User {
   imageUrl: URL
   nickname: NonEmptyString
   phoneNumber: NonEmptyString
-  uniqueName: NonEmptyString
 
   # from other table
-  feedCount: Int!
-  followerCount: Int!
-  followingCount: Int!
   likedCount: Int!
 }
 
@@ -29,6 +25,8 @@ enum Provider {
 }
 
 enum Gender {
+  UNKNOWN
   MALE
   FEMALE
+  OTHER
 }
