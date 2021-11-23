@@ -50,8 +50,6 @@ async function fetchKakaoUserInfo(accessToken: string) {
 export function setOAuthStrategies(app: Express) {
   // Kakao OAuth
   app.get('/oauth/kakao', async (req, res) => {
-    const frontendUrl = req.headers.referer ?? process.env.FRONTEND_URL
-
     if (!req.query.code) {
       return res.status(400).send('400 Bad Request')
     }
@@ -64,10 +62,11 @@ export function setOAuthStrategies(app: Express) {
     }
 
     const kakaoUserInfo = await fetchKakaoUserInfo(kakaoUserToken.access_token as string)
-    console.log('👀 - kakaoUserInfo', kakaoUserInfo)
 
     const findKakaoUserResult = await poolQuery(findKakaoUser, [kakaoUserInfo.id])
     const kakaoUser = findKakaoUserResult.rows[0]
+
+    const frontendUrl = process.env.FRONTEND_URL
 
     // 이미 kakao 소셜 로그인 정보가 존재하는 경우
     if (kakaoUser?.id) {
