@@ -48,7 +48,8 @@ CREATE TABLE post (
   category int NOT NULL,
   title varchar(100) NOT NULL,
   contents text NOT NULL,
-  user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
+  user_id uuid NOT NULL REFERENCES "user" ON DELETE
+  SET NULL
 );
 
 -- user_id: 줌 진행자
@@ -67,7 +68,8 @@ CREATE TABLE event (
   is_available boolean NOT NULL DEFAULT FALSE,
   date text,
   price int,
-  user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
+  user_id uuid NOT NULL REFERENCES "user" ON DELETE
+  SET NULL
 );
 
 CREATE TABLE "comment" (
@@ -76,9 +78,12 @@ CREATE TABLE "comment" (
   modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   contents text NOT NULL,
   --
-  post_id bigint NOT NULL REFERENCES post ON DELETE CASCADE,
-  user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE,
-  comment_id bigint REFERENCES "comment" ON DELETE CASCADE
+  post_id bigint NOT NULL REFERENCES post ON DELETE
+  SET NULL,
+    user_id uuid NOT NULL REFERENCES "user" ON DELETE
+  SET NULL,
+    comment_id bigint REFERENCES "comment" ON DELETE
+  SET NULL
 );
 
 CREATE TABLE hashtag (
