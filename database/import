@@ -14,6 +14,12 @@ else
   CONNECTION_STRING_WITH_SSL=$CONNECTION_STRING?sslmode=require
 fi
 
+if [[ $ENV_FILE_PATH == ".env" ]]; then
+  FOLDER='prod'
+else
+  FOLDER='dev'
+fi
+
 echo $CONNECTION_STRING_WITH_SSL
 
 do_not_print=$(psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql)
@@ -42,12 +48,12 @@ deleted_tables=(
 
 for public_table in "${public_tables[@]}"; do
   echo ${public_table}
-  columns=$(head -1 database/data/${public_table}.csv)
-  psql $CONNECTION_STRING_WITH_SSL -c "COPY ${public_table}(${columns}) FROM STDIN WITH CSV DELIMITER ',' HEADER ENCODING 'UTF-8'" <database/data/${public_table}.csv
+  columns=$(head -1 database/data/$FOLDER/${public_table}.csv)
+  psql $CONNECTION_STRING_WITH_SSL -c "COPY ${public_table}(${columns}) FROM STDIN WITH CSV DELIMITER ',' HEADER ENCODING 'UTF-8'" <database/data/$FOLDER/${public_table}.csv
 done
 
 for deleted_table in "${deleted_tables[@]}"; do
   echo ${deleted_table}
-  columns=$(head -1 database/data/${deleted_table}.csv)
-  psql $CONNECTION_STRING_WITH_SSL -c "COPY ${deleted_table}(${columns}) FROM STDIN WITH CSV DELIMITER ',' HEADER ENCODING 'UTF-8'" <database/data/${deleted_table}.csv
+  columns=$(head -1 database/data/$FOLDER/${deleted_table}.csv)
+  psql $CONNECTION_STRING_WITH_SSL -c "COPY ${deleted_table}(${columns}) FROM STDIN WITH CSV DELIMITER ',' HEADER ENCODING 'UTF-8'" <database/data/$FOLDER/${deleted_table}.csv
 done
