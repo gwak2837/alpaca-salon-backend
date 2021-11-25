@@ -135,6 +135,11 @@ type Query {
   commentsByPost(postId: ID!): [Comment]
 
   """
+  이번 달 핫한 이야기
+  """
+  famousPosts: [Post!]
+
+  """
   사용자 닉네임 중복 여부 검사
   """
   isNicknameUnique(nickname: NonEmptyString!): Boolean!

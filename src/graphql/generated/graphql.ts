@@ -134,6 +134,8 @@ export type Query = {
   __typename?: 'Query'
   /** 특정 게시글에 달린 댓글 */
   commentsByPost?: Maybe<Array<Maybe<Comment>>>
+  /** 이번 달 핫한 이야기 */
+  famousPosts?: Maybe<Array<Post>>
   /** 사용자 닉네임 중복 여부 검사 */
   isNicknameUnique: Scalars['Boolean']
   /** 좋아요 누른 댓글 */
@@ -477,6 +479,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryCommentsByPostArgs, 'postId'>
   >
+  famousPosts?: Resolver<Maybe<Array<ResolversTypes['Post']>>, ParentType, ContextType>
   isNicknameUnique?: Resolver<
     ResolversTypes['Boolean'],
     ParentType,
