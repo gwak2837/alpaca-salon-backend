@@ -7,6 +7,7 @@ import {
   LatitudeResolver,
   LongitudeResolver,
   NonEmptyStringResolver,
+  NonNegativeIntResolver,
   PositiveIntResolver,
   URLResolver,
   UUIDResolver,
@@ -19,6 +20,7 @@ export const JWT = JWTResolver
 export const Latitude = LatitudeResolver
 export const Longitude = LongitudeResolver
 export const NonEmptyString = NonEmptyStringResolver
+export const NonNegativeInt = NonNegativeIntResolver
 export const PositiveInt = PositiveIntResolver
 export const URL = URLResolver
 export const UUID = UUIDResolver

@@ -4,6 +4,9 @@ type Comment {
   modificationTime: DateTime!
   contents: [NonEmptyString!]!
   imageUrl: URL
+  isLiked: Boolean!
+  isModified: Boolean!
+  likedCount: NonNegativeInt!
 
   # from other table
   "이 댓글의 상위 댓글"

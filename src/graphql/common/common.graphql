@@ -5,6 +5,7 @@ scalar JWT
 scalar Latitude
 scalar Longitude
 scalar NonEmptyString
+scalar NonNegativeInt
 scalar PositiveInt
 scalar URL
 scalar UUID

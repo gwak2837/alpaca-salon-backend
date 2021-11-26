@@ -3,6 +3,9 @@ type Comment {
   creationTime: DateTime!
   id: ID!
   imageUrl: URL
+  isLiked: Boolean!
+  isModified: Boolean!
+  likedCount: NonNegativeInt!
   modificationTime: DateTime!
 
   """
@@ -60,6 +63,8 @@ type Mutation {
 }
 
 scalar NonEmptyString
+
+scalar NonNegativeInt
 
 """
 기본값: 내림차순

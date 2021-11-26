@@ -1,6 +1,10 @@
-SELECT id,
-  creation_time,
+SELECT post.id,
+  post.creation_time,
+  title,
   contents,
-  user_id
+  "user".id AS user__id,
+  "user".nickname AS user__nickname,
+  "user".image_url AS user__image_url
 FROM post
-WHERE id = $1
+  JOIN "user" ON "user".id = post.user_id
+WHERE post.id = $1

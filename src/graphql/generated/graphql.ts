@@ -22,6 +22,7 @@ export type Scalars = {
   Latitude: any
   Longitude: any
   NonEmptyString: any
+  NonNegativeInt: any
   PositiveInt: any
   URL: any
   UUID: any
@@ -33,6 +34,9 @@ export type Comment = {
   creationTime: Scalars['DateTime']
   id: Scalars['ID']
   imageUrl?: Maybe<Scalars['URL']>
+  isLiked: Scalars['Boolean']
+  isModified: Scalars['Boolean']
+  likedCount: Scalars['NonNegativeInt']
   modificationTime: Scalars['DateTime']
   /** 이 댓글의 상위 댓글 */
   parentComment?: Maybe<Comment>
@@ -316,6 +320,7 @@ export type ResolversTypes = {
   Longitude: ResolverTypeWrapper<Scalars['Longitude']>
   Mutation: ResolverTypeWrapper<{}>
   NonEmptyString: ResolverTypeWrapper<Scalars['NonEmptyString']>
+  NonNegativeInt: ResolverTypeWrapper<Scalars['NonNegativeInt']>
   OrderDirection: OrderDirection
   Pagination: Pagination
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>
@@ -348,6 +353,7 @@ export type ResolversParentTypes = {
   Longitude: Scalars['Longitude']
   Mutation: {}
   NonEmptyString: Scalars['NonEmptyString']
+  NonNegativeInt: Scalars['NonNegativeInt']
   Pagination: Pagination
   PositiveInt: Scalars['PositiveInt']
   Post: Post
@@ -370,6 +376,9 @@ export type CommentResolvers<
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   imageUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>
+  isLiked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  isModified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  likedCount?: Resolver<ResolversTypes['NonNegativeInt'], ParentType, ContextType>
   modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   parentComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType>
@@ -445,6 +454,11 @@ export type MutationResolvers<
 export interface NonEmptyStringScalarConfig
   extends GraphQLScalarTypeConfig<ResolversTypes['NonEmptyString'], any> {
   name: 'NonEmptyString'
+}
+
+export interface NonNegativeIntScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['NonNegativeInt'], any> {
+  name: 'NonNegativeInt'
 }
 
 export interface PositiveIntScalarConfig
@@ -569,6 +583,7 @@ export type Resolvers<ContextType = any> = {
   Longitude?: GraphQLScalarType
   Mutation?: MutationResolvers<ContextType>
   NonEmptyString?: GraphQLScalarType
+  NonNegativeInt?: GraphQLScalarType
   PositiveInt?: GraphQLScalarType
   Post?: PostResolvers<ContextType>
   Query?: QueryResolvers<ContextType>
