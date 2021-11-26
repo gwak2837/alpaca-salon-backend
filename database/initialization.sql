@@ -52,6 +52,37 @@ CREATE TABLE post (
   SET NULL
 );
 
+CREATE TABLE question (
+  id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  contents text NOT NULL
+);
+
+CREATE TABLE answer (
+  id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  contents text NOT NULL,
+  image_urls text [],
+  --
+  question_id bigint NOT NULL REFERENCES question ON DELETE CASCADE
+);
+
+CREATE TABLE answer_comment (
+  id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  contents text NOT NULL,
+  --
+  answer_id bigint NOT NULL REFERENCES answer ON DELETE
+  SET NULL,
+    user_id uuid NOT NULL REFERENCES "user" ON DELETE
+  SET NULL,
+    comment_id bigint REFERENCES answer_comment ON DELETE
+  SET NULL
+);
+
 -- user_id: 줌 진행자
 -- category
 -- 0: 전문가 강의, 1: 수다

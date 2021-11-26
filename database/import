@@ -22,7 +22,7 @@ fi
 
 echo $CONNECTION_STRING_WITH_SSL
 
-do_not_print=$(psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql)
+do_not_print=$(PGOPTIONS='--client-min-messages=warning' psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql)
 
 # 테이블 순서 중요
 public_tables=(
@@ -35,6 +35,13 @@ public_tables=(
   public.user_x_liked_event
   public.user_x_reserved_event
   public.post_x_hashtag
+)
+
+sequence_tables=(
+  comment
+  event
+  hashtag
+  post
 )
 
 # 테이블 순서 중요
@@ -50,6 +57,15 @@ for public_table in "${public_tables[@]}"; do
   echo ${public_table}
   columns=$(head -1 database/data/$FOLDER/${public_table}.csv)
   psql $CONNECTION_STRING_WITH_SSL -c "COPY ${public_table}(${columns}) FROM STDIN WITH CSV DELIMITER ',' HEADER ENCODING 'UTF-8'" <database/data/$FOLDER/${public_table}.csv
+done
+
+for sequence_table in "${sequence_tables[@]}"; do
+  psql $CONNECTION_STRING_WITH_SSL -c "
+    BEGIN;
+    LOCK TABLE ${sequence_table} IN EXCLUSIVE MODE;
+    SELECT setval(pg_get_serial_sequence('${sequence_table}', 'id'), COALESCE((SELECT MAX(id)+1 FROM ${sequence_table}), 1), false);
+    COMMIT;
+  "
 done
 
 for deleted_table in "${deleted_tables[@]}"; do
