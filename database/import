@@ -60,6 +60,7 @@ for public_table in "${public_tables[@]}"; do
 done
 
 for sequence_table in "${sequence_tables[@]}"; do
+  echo ${sequence_table} sequence
   psql $CONNECTION_STRING_WITH_SSL -c "
     BEGIN;
     LOCK TABLE ${sequence_table} IN EXCLUSIVE MODE;
