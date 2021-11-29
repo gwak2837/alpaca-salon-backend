@@ -2,7 +2,7 @@ type Comment {
   id: ID!
   creationTime: DateTime!
   modificationTime: DateTime!
-  contents: [NonEmptyString!]!
+  contents: NonEmptyString!
   imageUrl: URL
   isLiked: Boolean!
   isModified: Boolean!
@@ -11,6 +11,9 @@ type Comment {
   # from other table
   "이 댓글의 상위 댓글"
   parentComment: Comment
+
+  "대댓글"
+  subcomments: [Comment!]
 
   "이 댓글이 달린 피드"
   post: Post!

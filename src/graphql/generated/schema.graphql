@@ -1,5 +1,5 @@
 type Comment {
-  contents: [NonEmptyString!]!
+  contents: NonEmptyString!
   creationTime: DateTime!
   id: ID!
   imageUrl: URL
@@ -17,6 +17,11 @@ type Comment {
   이 댓글이 달린 피드
   """
   post: Post!
+
+  """
+  대댓글
+  """
+  subcomments: [Comment!]
 
   """
   댓글을 작성한 사용자
@@ -178,11 +183,6 @@ type Query {
   글 검색
   """
   searchPosts(keywords: [NonEmptyString!]!): [Post!]
-
-  """
-  대댓글
-  """
-  subComments(id: ID!): [Comment]
 
   """
   닉네임으로 사용자 검색

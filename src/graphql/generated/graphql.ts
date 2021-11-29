@@ -30,7 +30,7 @@ export type Scalars = {
 
 export type Comment = {
   __typename?: 'Comment'
-  contents: Array<Scalars['NonEmptyString']>
+  contents: Scalars['NonEmptyString']
   creationTime: Scalars['DateTime']
   id: Scalars['ID']
   imageUrl?: Maybe<Scalars['URL']>
@@ -42,6 +42,8 @@ export type Comment = {
   parentComment?: Maybe<Comment>
   /** 이 댓글이 달린 피드 */
   post: Post
+  /** 대댓글 */
+  subcomments?: Maybe<Array<Comment>>
   /** 댓글을 작성한 사용자 */
   user: User
 }
@@ -154,8 +156,6 @@ export type Query = {
   posts?: Maybe<Array<Post>>
   /** 글 검색 */
   searchPosts?: Maybe<Array<Post>>
-  /** 대댓글 */
-  subComments?: Maybe<Array<Maybe<Comment>>>
   /** 닉네임으로 사용자 검색 */
   userByNickname?: Maybe<User>
 }
@@ -178,10 +178,6 @@ export type QueryPostsArgs = {
 
 export type QuerySearchPostsArgs = {
   keywords: Array<Scalars['NonEmptyString']>
-}
-
-export type QuerySubCommentsArgs = {
-  id: Scalars['ID']
 }
 
 export type QueryUserByNicknameArgs = {
@@ -372,7 +368,7 @@ export type CommentResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']
 > = {
-  contents?: Resolver<Array<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  contents?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   imageUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>
@@ -382,6 +378,7 @@ export type CommentResolvers<
   modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   parentComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType>
+  subcomments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }
@@ -520,12 +517,6 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QuerySearchPostsArgs, 'keywords'>
-  >
-  subComments?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Comment']>>>,
-    ParentType,
-    ContextType,
-    RequireFields<QuerySubCommentsArgs, 'id'>
   >
   userByNickname?: Resolver<
     Maybe<ResolversTypes['User']>,
