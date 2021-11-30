@@ -51,7 +51,7 @@ scalar Latitude
 scalar Longitude
 
 type Mutation {
-  createComment(commentId: ID, postId: ID!): Comment
+  createComment(commentId: ID, contents: NonEmptyString!, postId: ID!): Comment
   createPost(input: PostCreationInput!): Post
   deletePost(id: ID!): Post
 
@@ -65,7 +65,7 @@ type Mutation {
   회원탈퇴 시 사용자 정보가 모두 초기화됩
   """
   unregister: User
-  updateComment(id: ID!): Comment
+  updateComment(contents: NonEmptyString!, id: ID!): Comment
   updatePost(input: PostModificationInput!): Post
   updateUser(input: UserModificationInput!): User
 }

@@ -72,6 +72,7 @@ export type Mutation = {
 
 export type MutationCreateCommentArgs = {
   commentId?: Maybe<Scalars['ID']>
+  contents: Scalars['NonEmptyString']
   postId: Scalars['ID']
 }
 
@@ -88,6 +89,7 @@ export type MutationToggleLikingCommentArgs = {
 }
 
 export type MutationUpdateCommentArgs = {
+  contents: Scalars['NonEmptyString']
   id: Scalars['ID']
 }
 
@@ -440,7 +442,7 @@ export type MutationResolvers<
     Maybe<ResolversTypes['Comment']>,
     ParentType,
     ContextType,
-    RequireFields<MutationCreateCommentArgs, 'postId'>
+    RequireFields<MutationCreateCommentArgs, 'contents' | 'postId'>
   >
   createPost?: Resolver<
     Maybe<ResolversTypes['Post']>,
@@ -466,7 +468,7 @@ export type MutationResolvers<
     Maybe<ResolversTypes['Comment']>,
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateCommentArgs, 'id'>
+    RequireFields<MutationUpdateCommentArgs, 'contents' | 'id'>
   >
   updatePost?: Resolver<
     Maybe<ResolversTypes['Post']>,

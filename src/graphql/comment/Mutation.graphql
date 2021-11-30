@@ -1,7 +1,7 @@
 type Mutation {
   toggleLikingComment(id: ID!): Comment
 
-  createComment(postId: ID!, commentId: ID): Comment
+  createComment(postId: ID!, contents: NonEmptyString!, commentId: ID): Comment
 
-  updateComment(id: ID!): Comment
+  updateComment(id: ID!, contents: NonEmptyString!): Comment
 }

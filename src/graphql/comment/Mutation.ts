@@ -1,8 +1,10 @@
-import { AuthenticationError } from 'apollo-server-errors'
+import { AuthenticationError, UserInputError } from 'apollo-server-errors'
 
 import type { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
 import { Comment, MutationResolvers } from '../generated/graphql'
+import checkCommentInPost from './sql/checkCommentInPost.sql'
+import createComment from './sql/createComment.sql'
 import toggleLikingComment from './sql/toggleLikingComment.sql'
 
 export const Mutation: MutationResolvers<ApolloContext> = {
@@ -14,8 +16,19 @@ export const Mutation: MutationResolvers<ApolloContext> = {
     return { id, isLiked: rows[0].result, likedCount: rows[0].liked_count } as Comment
   },
 
-  createComment: async (_, { postId, commentId }, { userId }) => {
+  createComment: async (_, { postId, contents, commentId }, { userId }) => {
     if (!userId) throw new AuthenticationError('로그인 후 시도해주세요.')
-    return {} as Comment
+
+    if (commentId) {
+      const { rowCount } = await poolQuery(checkCommentInPost, [postId, commentId])
+      if (rowCount === 0)
+        throw new UserInputError(
+          `postId: ${postId}, commentId: ${commentId} 에 해당하는 댓글에 대댓글을 작성할 수 없습니다.`
+        )
+    }
+
+    const { rows } = await poolQuery(createComment, [contents, postId, userId, commentId])
+
+    return rows[0]
   },
 }
