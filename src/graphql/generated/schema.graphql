@@ -142,7 +142,7 @@ type Query {
   """
   특정 게시글에 달린 댓글
   """
-  commentsByPost(postId: ID!): [Comment]
+  commentsByPost(postId: ID!): [Comment!]
 
   """
   이번 달 핫한 이야기
