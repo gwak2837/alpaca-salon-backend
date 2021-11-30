@@ -51,8 +51,10 @@ scalar Latitude
 scalar Longitude
 
 type Mutation {
+  createComment(commentId: ID, postId: ID!): Comment
   createPost(input: PostCreationInput!): Post
   deletePost(id: ID!): Post
+  likeComment(id: ID!): Comment
 
   """
   JWT 인증 토큰과 같이 요청하면 로그아웃 성공 여부를 반환함
@@ -63,6 +65,7 @@ type Mutation {
   회원탈퇴 시 사용자 정보가 모두 초기화됩
   """
   unregister: User
+  updateComment(id: ID!): Comment
   updatePost(input: PostModificationInput!): Post
   updateUser(input: UserModificationInput!): User
 }

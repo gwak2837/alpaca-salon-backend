@@ -2,12 +2,14 @@ SELECT "comment".id,
   "comment".creation_time,
   "comment".modification_time,
   "comment".contents,
-  COUNT(user_x_liked_comment.liking_user_id) AS liked_count,
+  COUNT(DISTINCT user_x_liked_comment.liking_user_id) AS liked_count,
   is_liked.liking_user_id AS is_liked,
   "user".id AS user__id,
   "user".nickname AS user__nickname,
   "user".image_url AS user__image_url,
   subcomment.id AS subcomments__id,
+  subcomment.creation_time AS subcomments__creation_time,
+  subcomment.modification_time AS subcomments__modification_time,
   subcomment.contents AS subcomments__contents,
   COUNT(subcomment_liked_count.liking_user_id) AS subcomments__liked_count,
   subcomment_is_liked.liking_user_id AS subcomments__is_liked,
@@ -15,7 +17,7 @@ SELECT "comment".id,
   subcomment_user.nickname AS subcomments__user__nickname,
   subcomment_user.image_url AS subcomments__user__image_url
 FROM "comment"
-  LEFT JOIN "user" ON "user".id = "comment".user_id
+  JOIN "user" ON "user".id = "comment".user_id
   LEFT JOIN user_x_liked_comment ON user_x_liked_comment.comment_id = "comment".id
   LEFT JOIN user_x_liked_comment AS is_liked ON is_liked.comment_id = "comment".id
   AND is_liked.liking_user_id = $2

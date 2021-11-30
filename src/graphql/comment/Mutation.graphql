@@ -1,0 +1,7 @@
+type Mutation {
+  likeComment(id: ID!): Comment
+
+  createComment(postId: ID!, commentId: ID): Comment
+
+  updateComment(id: ID!): Comment
+}

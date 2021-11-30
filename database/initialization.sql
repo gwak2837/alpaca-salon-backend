@@ -142,11 +142,10 @@ CREATE TABLE user_x_reserved_event (
 
 CREATE TABLE user_x_liked_comment (
   liking_user_id uuid REFERENCES "user" ON DELETE CASCADE,
-  liked_user_id uuid REFERENCES "user" ON DELETE CASCADE,
   comment_id bigint REFERENCES "comment" ON DELETE CASCADE,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   --
-  PRIMARY KEY (liking_user_id, liked_user_id, comment_id)
+  PRIMARY KEY (liking_user_id, comment_id)
 );
 
 CREATE TABLE post_x_hashtag (

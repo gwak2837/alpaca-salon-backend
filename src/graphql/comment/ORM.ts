@@ -15,10 +15,10 @@ export function commentORM(rows: Record<string, any>[]) {
         creationTime: row.creation_time,
         modificationTime: row.modification_time,
         contents: row.contents,
-        likedCount: row.liked_count,
         isLiked: Boolean(row.is_liked),
         isModified:
           row.creation_time && row.modification_time && row.creation_time !== row.modification_time,
+        likedCount: row.liked_count,
         user: {
           id: row.user__id,
           nickname: row.user__nickname,
@@ -33,9 +33,15 @@ export function commentORM(rows: Record<string, any>[]) {
 
     comment.subcomments.push({
       id: row.subcomments__id,
+      creationTime: row.subcomments__creation_time,
+      modificationTime: row.subcomments__modification_time,
       contents: row.subcomments__contents,
-      likedCount: row.subcomments__liked_count,
       isLiked: row.subcomments__is_liked,
+      isModified:
+        row.subcomments__creation_time &&
+        row.subcomments__modification_time &&
+        row.subcomments__creation_time !== row.subcomments__modification_time,
+      likedCount: row.subcomments__liked_count,
       user: {
         id: row.subcomments__user__id,
         nickname: row.subcomments__user__nickname,

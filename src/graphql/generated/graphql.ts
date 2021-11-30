@@ -57,14 +57,22 @@ export enum Gender {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  createComment?: Maybe<Comment>
   createPost?: Maybe<Post>
   deletePost?: Maybe<Post>
+  likeComment?: Maybe<Comment>
   /** JWT 인증 토큰과 같이 요청하면 로그아웃 성공 여부를 반환함 */
   logout: Scalars['Boolean']
   /** 회원탈퇴 시 사용자 정보가 모두 초기화됩 */
   unregister?: Maybe<User>
+  updateComment?: Maybe<Comment>
   updatePost?: Maybe<Post>
   updateUser?: Maybe<User>
+}
+
+export type MutationCreateCommentArgs = {
+  commentId?: Maybe<Scalars['ID']>
+  postId: Scalars['ID']
 }
 
 export type MutationCreatePostArgs = {
@@ -72,6 +80,14 @@ export type MutationCreatePostArgs = {
 }
 
 export type MutationDeletePostArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationLikeCommentArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationUpdateCommentArgs = {
   id: Scalars['ID']
 }
 
@@ -420,6 +436,12 @@ export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
+  createComment?: Resolver<
+    Maybe<ResolversTypes['Comment']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateCommentArgs, 'postId'>
+  >
   createPost?: Resolver<
     Maybe<ResolversTypes['Post']>,
     ParentType,
@@ -432,8 +454,20 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeletePostArgs, 'id'>
   >
+  likeComment?: Resolver<
+    Maybe<ResolversTypes['Comment']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationLikeCommentArgs, 'id'>
+  >
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   unregister?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
+  updateComment?: Resolver<
+    Maybe<ResolversTypes['Comment']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateCommentArgs, 'id'>
+  >
   updatePost?: Resolver<
     Maybe<ResolversTypes['Post']>,
     ParentType,
