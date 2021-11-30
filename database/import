@@ -22,6 +22,8 @@ fi
 
 echo $CONNECTION_STRING_WITH_SSL
 
+./database/export $ENV_FILE_PATH
+
 do_not_print=$(PGOPTIONS='--client-min-messages=warning' psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql)
 
 # 테이블 순서 중요
