@@ -5,9 +5,8 @@ type Post {
   category: PostCategory!
   title: NonEmptyString!
   contents: NonEmptyString!
-  commentCount: PositiveInt!
+  commentCount: NonNegativeInt!
 
-  # from other table
   "피드에 달린 해시태그"
   hashtags: [NonEmptyString!]
 

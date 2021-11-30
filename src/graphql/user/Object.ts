@@ -12,7 +12,7 @@ export const Gender = {
 }
 
 function authenticateUser(loginedUserId: ApolloContext['userId'], targetUserId: string) {
-  if (!loginedUserId) throw new AuthenticationError('개인정보를 확인하려면 로그인 후 시도해주세요.')
+  if (!loginedUserId) throw new AuthenticationError('로그인 후 시도해주세요.')
 
   if (loginedUserId !== targetUserId)
     throw new ForbiddenError('다른 사용자의 정보는 조회할 수 없습니다.')
