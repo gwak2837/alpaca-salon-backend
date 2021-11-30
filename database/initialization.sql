@@ -141,11 +141,11 @@ CREATE TABLE user_x_reserved_event (
 );
 
 CREATE TABLE user_x_liked_comment (
-  liking_user_id uuid REFERENCES "user" ON DELETE CASCADE,
+  user_id uuid REFERENCES "user" ON DELETE CASCADE,
   comment_id bigint REFERENCES "comment" ON DELETE CASCADE,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   --
-  PRIMARY KEY (liking_user_id, comment_id)
+  PRIMARY KEY (user_id, comment_id)
 );
 
 CREATE TABLE post_x_hashtag (
@@ -246,6 +246,48 @@ WHERE id = user_id;
 DELETE FROM "user"
 WHERE id = user_id
 RETURNING id INTO deleted_user_id;
+
+END $$;
+
+CREATE FUNCTION toggle_liking_comment (
+  user_id uuid,
+  comment_id bigint,
+  out result boolean,
+  out liked_count int
+) LANGUAGE plpgsql AS $$ BEGIN PERFORM
+FROM user_x_liked_comment
+WHERE user_x_liked_comment.user_id = toggle_liking_comment.user_id
+  AND user_x_liked_comment.comment_id = toggle_liking_comment.comment_id;
+
+IF FOUND THEN
+DELETE FROM user_x_liked_comment
+WHERE user_x_liked_comment.user_id = toggle_liking_comment.user_id
+  AND user_x_liked_comment.comment_id = toggle_liking_comment.comment_id;
+
+SELECT COUNT(user_x_liked_comment.user_id) INTO liked_count
+FROM user_x_liked_comment
+WHERE user_x_liked_comment.comment_id = toggle_liking_comment.comment_id;
+
+result = FALSE;
+
+RETURN;
+
+ELSE
+INSERT INTO user_x_liked_comment (user_id, comment_id)
+VALUES (
+    toggle_liking_comment.user_id,
+    toggle_liking_comment.comment_id
+  );
+
+SELECT COUNT(user_x_liked_comment.user_id) INTO liked_count
+FROM user_x_liked_comment
+WHERE user_x_liked_comment.comment_id = toggle_liking_comment.comment_id;
+
+result = TRUE;
+
+RETURN;
+
+END IF;
 
 END $$;
 

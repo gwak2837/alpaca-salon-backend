@@ -1,5 +1,5 @@
 type Mutation {
-  likeComment(id: ID!): Comment
+  toggleLikingComment(id: ID!): Comment
 
   createComment(postId: ID!, commentId: ID): Comment
 

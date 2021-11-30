@@ -60,9 +60,9 @@ export type Mutation = {
   createComment?: Maybe<Comment>
   createPost?: Maybe<Post>
   deletePost?: Maybe<Post>
-  likeComment?: Maybe<Comment>
   /** JWT 인증 토큰과 같이 요청하면 로그아웃 성공 여부를 반환함 */
   logout: Scalars['Boolean']
+  toggleLikingComment?: Maybe<Comment>
   /** 회원탈퇴 시 사용자 정보가 모두 초기화됩 */
   unregister?: Maybe<User>
   updateComment?: Maybe<Comment>
@@ -83,7 +83,7 @@ export type MutationDeletePostArgs = {
   id: Scalars['ID']
 }
 
-export type MutationLikeCommentArgs = {
+export type MutationToggleLikingCommentArgs = {
   id: Scalars['ID']
 }
 
@@ -113,7 +113,7 @@ export type Pagination = {
 export type Post = {
   __typename?: 'Post'
   category: PostCategory
-  commentCount: Scalars['PositiveInt']
+  commentCount: Scalars['NonNegativeInt']
   contents: Scalars['NonEmptyString']
   creationTime: Scalars['DateTime']
   /** 피드에 달린 해시태그 */
@@ -454,13 +454,13 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeletePostArgs, 'id'>
   >
-  likeComment?: Resolver<
+  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  toggleLikingComment?: Resolver<
     Maybe<ResolversTypes['Comment']>,
     ParentType,
     ContextType,
-    RequireFields<MutationLikeCommentArgs, 'id'>
+    RequireFields<MutationToggleLikingCommentArgs, 'id'>
   >
-  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   unregister?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   updateComment?: Resolver<
     Maybe<ResolversTypes['Comment']>,
@@ -502,7 +502,7 @@ export type PostResolvers<
   ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']
 > = {
   category?: Resolver<ResolversTypes['PostCategory'], ParentType, ContextType>
-  commentCount?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>
+  commentCount?: Resolver<ResolversTypes['NonNegativeInt'], ParentType, ContextType>
   contents?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   hashtags?: Resolver<Maybe<Array<ResolversTypes['NonEmptyString']>>, ParentType, ContextType>
