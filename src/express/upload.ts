@@ -1,24 +1,47 @@
 import { Storage } from '@google-cloud/storage'
-import { Express } from 'express'
+import express, { Express } from 'express'
+import Multer from 'multer'
 
 import { bucketName } from '../utils/constants'
 
-const bucket = new Storage(/* {
-  projectId: 'alpaca-salon',
-  keyFilename: './src/express/alpaca-salon-8482a52cd70c.json',
-} */).bucket(bucketName)
+const multer = Multer({
+  storage: Multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
+  },
+})
 
+const bucket =
+  process.env.NODE_ENV === 'production'
+    ? new Storage().bucket(bucketName)
+    : new Storage({
+        projectId: 'alpaca-salon',
+        keyFilename: './src/express/alpaca-salon-8482a52cd70c.json',
+      }).bucket(bucketName)
+
+// https://cloud.google.com/appengine/docs/flexible/nodejs/using-cloud-storage
 export function setFileUploading(app: Express) {
-  app.get('/upload', async (req, res) => {
-    const filePath = 'dist/index.js.LICENSE.txt'
-    const destFileName = `index.js.LICENSE-${new Date().getTime()}.txt`
+  app.use(express.json())
 
-    await bucket.upload(filePath, {
-      destination: destFileName,
+  app.post('/upload', multer.single('file'), (req, res, next) => {
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.')
+    }
+
+    // Create a new blob in the bucket and upload the file data.
+    const blob = bucket.file(req.file.originalname)
+    const blobStream = blob.createWriteStream()
+
+    blobStream.on('error', (err) => {
+      next(err)
     })
 
-    const fileUrl = `https://storage.googleapis.com/${bucketName}/${destFileName}`
-    res.send(fileUrl)
-    console.log(`${filePath} uploaded to ${fileUrl}`)
+    blobStream.on('finish', () => {
+      // The public URL can be used to directly access the file via HTTP.
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+      res.status(200).send(publicUrl)
+    })
+
+    blobStream.end(req.file.buffer)
   })
 }
