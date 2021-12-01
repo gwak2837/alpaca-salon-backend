@@ -10,7 +10,7 @@ function encodeGender(gender: string) {
   switch (gender) {
     case 'male':
       return 1
-    case 'famale':
+    case 'female':
       return 2
     default:
       return 0
@@ -55,8 +55,6 @@ export function setOAuthStrategies(app: Express) {
     }
 
     const kakaoUserToken = await fetchKakaoUserToken(req.query.code as string)
-    console.log('👀 - kakaoUserToken', kakaoUserToken)
-
     if (kakaoUserToken.error) {
       return res.status(400).send('400 Bad Request')
     }

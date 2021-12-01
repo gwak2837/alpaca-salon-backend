@@ -6,6 +6,7 @@ import express from 'express'
 
 import { poolQuery } from '../database/postgres'
 import { setOAuthStrategies } from '../express/oauth'
+import { setFileUploading } from '../express/upload'
 import { resolvers } from '../graphql'
 import typeDefs from '../graphql/generated/schema.graphql'
 import { verifyJWT } from '../utils/jwt'
@@ -20,6 +21,7 @@ export async function startApolloServer() {
   const app = express()
   const httpServer = http.createServer(app)
   setOAuthStrategies(app)
+  setFileUploading(app)
 
   // Same ApolloServer initialization as before, plus the drain plugin.
   const apolloServer = new ApolloServer({
