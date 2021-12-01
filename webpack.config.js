@@ -7,6 +7,10 @@ const { NODE_ENV } = process.env
 
 module.exports = {
   entry: './src/index.ts',
+  externals: {
+    '@google-cloud/storage': 'commonjs @google-cloud/storage',
+    express: 'commonjs express',
+  },
   mode: NODE_ENV,
   module: {
     rules: [
