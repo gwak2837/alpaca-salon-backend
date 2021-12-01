@@ -9,7 +9,7 @@ module.exports = {
   entry: './src/index.ts',
   externals: {
     '@google-cloud/storage': 'commonjs @google-cloud/storage',
-    express: 'commonjs express',
+    // express: 'commonjs express',
   },
   mode: NODE_ENV,
   module: {
