@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
@@ -71,7 +72,7 @@ export type Mutation = {
 }
 
 export type MutationCreateCommentArgs = {
-  commentId?: Maybe<Scalars['ID']>
+  commentId?: InputMaybe<Scalars['ID']>
   contents: Scalars['NonEmptyString']
   postId: Scalars['ID']
 }
@@ -107,8 +108,8 @@ export enum OrderDirection {
 }
 
 export type Pagination = {
-  lastId?: Maybe<Scalars['ID']>
-  lastValue?: Maybe<Scalars['LastValue']>
+  lastId?: InputMaybe<Scalars['ID']>
+  lastValue?: InputMaybe<Scalars['LastValue']>
   limit: Scalars['PositiveInt']
 }
 
@@ -136,16 +137,16 @@ export enum PostCategory {
 }
 
 export type PostCreationInput = {
-  category?: Maybe<PostCategory>
-  contents?: Maybe<Scalars['String']>
-  title?: Maybe<Scalars['String']>
+  category?: InputMaybe<PostCategory>
+  contents?: InputMaybe<Scalars['String']>
+  title?: InputMaybe<Scalars['String']>
 }
 
 export type PostModificationInput = {
-  category?: Maybe<PostCategory>
-  contents?: Maybe<Scalars['String']>
+  category?: InputMaybe<PostCategory>
+  contents?: InputMaybe<Scalars['String']>
   id: Scalars['ID']
-  title?: Maybe<Scalars['String']>
+  title?: InputMaybe<Scalars['String']>
 }
 
 /** OAuth 공급자 */
@@ -226,14 +227,14 @@ export type UserAuthentication = {
 }
 
 export type UserModificationInput = {
-  ageRange?: Maybe<Scalars['NonEmptyString']>
-  bio?: Maybe<Scalars['String']>
-  birthday?: Maybe<Scalars['NonEmptyString']>
-  email?: Maybe<Scalars['EmailAddress']>
-  gender?: Maybe<Gender>
-  imageUrl?: Maybe<Scalars['URL']>
-  nickname?: Maybe<Scalars['NonEmptyString']>
-  phoneNumber?: Maybe<Scalars['NonEmptyString']>
+  ageRange?: InputMaybe<Scalars['NonEmptyString']>
+  bio?: InputMaybe<Scalars['String']>
+  birthday?: InputMaybe<Scalars['NonEmptyString']>
+  email?: InputMaybe<Scalars['EmailAddress']>
+  gender?: InputMaybe<Gender>
+  imageUrl?: InputMaybe<Scalars['URL']>
+  nickname?: InputMaybe<Scalars['NonEmptyString']>
+  phoneNumber?: InputMaybe<Scalars['NonEmptyString']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -257,7 +258,7 @@ export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
   args: TArgs,
   context: TContext,
   info: GraphQLResolveInfo
-) => AsyncIterator<TResult> | Promise<AsyncIterator<TResult>>
+) => AsyncIterable<TResult> | Promise<AsyncIterable<TResult>>
 
 export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
