@@ -122,6 +122,7 @@ export type Post = {
   /** 피드에 달린 해시태그 */
   hashtags?: Maybe<Array<Scalars['NonEmptyString']>>
   id: Scalars['ID']
+  imageUrls?: Maybe<Array<Scalars['URL']>>
   /** 피드 좋아요 여부 (로그인 필요) */
   isLiked: Scalars['Boolean']
   modificationTime: Scalars['DateTime']
@@ -138,8 +139,9 @@ export enum PostCategory {
 
 export type PostCreationInput = {
   category?: InputMaybe<PostCategory>
-  contents?: InputMaybe<Scalars['String']>
-  title?: InputMaybe<Scalars['String']>
+  contents: Scalars['String']
+  imageUrls?: InputMaybe<Array<Scalars['URL']>>
+  title: Scalars['String']
 }
 
 export type PostModificationInput = {
@@ -510,6 +512,7 @@ export type PostResolvers<
   creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   hashtags?: Resolver<Maybe<Array<ResolversTypes['NonEmptyString']>>, ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  imageUrls?: Resolver<Maybe<Array<ResolversTypes['URL']>>, ParentType, ContextType>
   isLiked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   title?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>

@@ -8,8 +8,9 @@ type Mutation {
 
 input PostCreationInput {
   category: PostCategory
-  title: String
-  contents: String
+  title: String!
+  contents: String!
+  imageUrls: [URL!]
 }
 
 input PostModificationInput {

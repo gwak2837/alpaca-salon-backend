@@ -2,6 +2,7 @@ import { Storage } from '@google-cloud/storage'
 import express, { Express } from 'express'
 import Multer from 'multer'
 
+import { sha256 } from '../utils'
 import { bucketName } from '../utils/constants'
 
 const multer = Multer({
@@ -19,29 +20,40 @@ const bucket =
         keyFilename: './src/express/alpaca-salon-8482a52cd70c.json',
       }).bucket(bucketName)
 
+function uploadFileToGoogleCloudStorage(file: Express.Multer.File) {
+  return new Promise((resolve, reject) => {
+    const fileName = `${sha256(Date.now() + file.originalname)}.${file.mimetype.split('/')[1]}`
+    const blobStream = bucket.file(fileName).createWriteStream()
+
+    blobStream.on('error', (err) => {
+      reject(err)
+    })
+
+    blobStream.on('finish', () => {
+      resolve(`https://storage.googleapis.com/${bucket.name}/${fileName}`)
+    })
+
+    blobStream.end(file.buffer)
+  })
+}
+
 // https://cloud.google.com/appengine/docs/flexible/nodejs/using-cloud-storage
 export function setFileUploading(app: Express) {
   app.use(express.json())
 
-  app.post('/upload', multer.single('file'), (req, res, next) => {
-    if (!req.file) {
+  app.post('/upload', multer.array('images'), (req, res, next) => {
+    const files = req.files as Express.Multer.File[]
+
+    if (!files) {
       return res.status(400).send('No file uploaded.')
     }
 
-    // Create a new blob in the bucket and upload the file data.
-    const blob = bucket.file(req.file.originalname)
-    const blobStream = blob.createWriteStream()
-
-    blobStream.on('error', (err) => {
-      next(err)
-    })
-
-    blobStream.on('finish', () => {
-      // The public URL can be used to directly access the file via HTTP.
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-      res.status(200).send(publicUrl)
-    })
-
-    blobStream.end(req.file.buffer)
+    Promise.all(files.map((file) => uploadFileToGoogleCloudStorage(file)))
+      .then((imageUrls) => res.status(200).json({ imageUrls }))
+      .catch((err) => {
+        next(err)
+        console.error(err)
+        res.status(500).send('File upload failed.')
+      })
   })
 }

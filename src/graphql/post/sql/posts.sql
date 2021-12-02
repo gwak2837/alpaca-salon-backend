@@ -4,6 +4,7 @@ SELECT post.id,
   category,
   title,
   post.contents,
+  post.image_urls,
   COUNT("comment".id) AS comment_count,
   "user".id AS user__id,
   "user".nickname AS user__nickname

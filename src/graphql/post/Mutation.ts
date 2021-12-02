@@ -17,6 +17,7 @@ export const Mutation: MutationResolvers<ApolloContext> = {
       input.category ?? PostCategory.UNDEFINED,
       input.title,
       input.contents,
+      input.imageUrls?.map((imageUrl) => imageUrl.href),
       userId,
     ])
 

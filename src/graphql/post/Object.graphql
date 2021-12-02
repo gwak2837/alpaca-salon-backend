@@ -6,6 +6,7 @@ type Post {
   title: NonEmptyString!
   contents: NonEmptyString!
   commentCount: NonNegativeInt!
+  imageUrls: [URL!]
 
   "피드에 달린 해시태그"
   hashtags: [NonEmptyString!]
