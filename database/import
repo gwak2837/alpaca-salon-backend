@@ -22,7 +22,7 @@ fi
 
 echo $CONNECTION_STRING_WITH_SSL
 
-./database/export $ENV_FILE_PATH
+# ./database/export $ENV_FILE_PATH
 
 do_not_print=$(PGOPTIONS='--client-min-messages=warning' psql $CONNECTION_STRING_WITH_SSL -f database/initialization.sql)
 
@@ -33,6 +33,9 @@ public_tables=(
   public.comment
   public.hashtag
   public.event
+  public.question
+  public.answer
+  public.answer_comment
   public.user_x_liked_comment
   public.user_x_liked_event
   public.user_x_reserved_event
@@ -40,10 +43,13 @@ public_tables=(
 )
 
 sequence_tables=(
+  answer_comment
+  answer
   comment
   event
   hashtag
   post
+  question
 )
 
 # 테이블 순서 중요
