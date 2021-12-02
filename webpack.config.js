@@ -23,8 +23,12 @@ module.exports = {
     ],
   },
   output: {
+    clean: true,
     filename: 'index.js',
     path: resolve(__dirname, 'dist'),
+  },
+  optimization: {
+    minimize: false,
   },
   plugins: [new IgnorePlugin({ resourceRegExp: /^pg-native$/ })],
   resolve: {
