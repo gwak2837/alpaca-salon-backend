@@ -9,7 +9,7 @@ COPY .yarn .yarn
 COPY src src
 COPY .yarnrc.yml codegen.yml package.json tsconfig.json webpack.config.js yarn.lock ./
 
-RUN yarn && yarn build
+RUN yarn && yarn tsc
 
 # Install only dependency packages
 FROM node:16-alpine AS runner
