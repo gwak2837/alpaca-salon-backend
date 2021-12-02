@@ -2,6 +2,7 @@ import http from 'http'
 
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core'
 import { ApolloServer } from 'apollo-server-express'
+import cors from 'cors'
 import express from 'express'
 
 import { poolQuery } from '../database/postgres'
@@ -19,9 +20,11 @@ export type ApolloContext = {
 export async function startApolloServer() {
   // Required logic for integrating with Express
   const app = express()
-  const httpServer = http.createServer(app)
+  app.use(cors())
+  app.disable('x-powered-by')
   setOAuthStrategies(app)
   setFileUploading(app)
+  const httpServer = http.createServer(app)
 
   // Same ApolloServer initialization as before, plus the drain plugin.
   const apolloServer = new ApolloServer({

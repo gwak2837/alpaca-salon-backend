@@ -1,3 +1,5 @@
+import crypto from 'crypto'
+
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -90,4 +92,10 @@ export function isEmptyObject(obj: any) {
     Object.keys(obj).length === 0 &&
     Object.getPrototypeOf(obj) === Object.prototype
   )
+}
+
+const hash = crypto.createHash('sha256')
+
+export function sha256(str: string) {
+  return crypto.createHash('sha256').update(str).digest('hex')
 }
