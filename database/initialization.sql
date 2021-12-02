@@ -48,6 +48,7 @@ CREATE TABLE post (
   category int NOT NULL,
   title varchar(100) NOT NULL,
   contents text NOT NULL,
+  image_urls text [],
   user_id uuid NOT NULL REFERENCES "user" ON DELETE
   SET NULL
 );
