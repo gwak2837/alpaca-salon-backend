@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require('path')
 const { IgnorePlugin } = require('webpack')
+const TerserPlugin = require('terser-webpack-plugin')
 
 const { NODE_ENV } = process.env
 
@@ -27,9 +28,18 @@ module.exports = {
     filename: 'index.js',
     path: resolve(__dirname, 'dist'),
   },
-  // optimization: {
-  //   minimize: false,
-  // },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          keep_classnames: /AbortSignal/,
+          keep_fnames: /AbortSignal/,
+        },
+      }),
+    ],
+  },
   plugins: [new IgnorePlugin({ resourceRegExp: /^pg-native$/ })],
   resolve: {
     extensions: ['.ts', '.mjs', '.js'],
