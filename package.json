@@ -1,7 +1,7 @@
 {
-  "name": "alpaca-salon-backend",
+  "name": "alpacasalon-backend",
   "version": "0.1.0",
-  "description": "alpaca-salon-backend",
+  "description": "alpacasalon-backend",
   "homepage": "https://github.com/rmfpdlxmtidl/alpaca-salon-backend#readme",
   "bugs": {
     "url": "https://github.com/rmfpdlxmtidl/alpaca-salon-backend/issues",
@@ -89,7 +89,7 @@
     "webpack-cli": "^4.9.1"
   },
   "engines": {
-    "node": ">=16.10.0"
+    "node": ">=16.13.1"
   },
   "private": true
 }

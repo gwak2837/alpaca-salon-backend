@@ -3466,9 +3466,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"alpaca-salon-backend@workspace:.":
+"alpacasalon-backend@workspace:.":
   version: 0.0.0-use.local
-  resolution: "alpaca-salon-backend@workspace:."
+  resolution: "alpacasalon-backend@workspace:."
   dependencies:
     "@babel/core": ^7.16.0
     "@babel/preset-env": ^7.16.4
