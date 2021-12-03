@@ -27,9 +27,9 @@ module.exports = {
     filename: 'index.js',
     path: resolve(__dirname, 'dist'),
   },
-  optimization: {
-    minimize: false,
-  },
+  // optimization: {
+  //   minimize: false,
+  // },
   plugins: [new IgnorePlugin({ resourceRegExp: /^pg-native$/ })],
   resolve: {
     extensions: ['.ts', '.mjs', '.js'],
