@@ -28,7 +28,7 @@
     "postinstall": "[ -d '.husky' ] && husky install || true"
   },
   "dependencies": {
-    "@google-cloud/storage": "^5.16.0",
+    "@google-cloud/storage": "^5.16.1",
     "@graphql-tools/merge": "^8.2.1",
     "apollo-server-core": "^3.5.0",
     "apollo-server-errors": "^3.3.0",
@@ -44,7 +44,7 @@
     "passport": "^0.5.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.7.1",
-    "redis": "^3.1.2"
+    "redis": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -79,7 +79,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
     "husky": "^7.0.4",
-    "jest": "^27.4.2",
+    "jest": "^27.4.3",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.0",
     "terser-webpack-plugin": "^5.2.5",
