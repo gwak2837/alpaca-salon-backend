@@ -2,7 +2,7 @@ import { Storage } from '@google-cloud/storage'
 import express, { Express } from 'express'
 import Multer from 'multer'
 
-import { sha256 } from '../utils'
+import { sha128 } from '../utils'
 import { bucketName } from '../utils/constants'
 
 const multer = Multer({
@@ -12,17 +12,18 @@ const multer = Multer({
   },
 })
 
-const bucket =
+const bucket = new Storage(
   process.env.NODE_ENV === 'production'
-    ? new Storage().bucket(bucketName)
-    : new Storage({
+    ? undefined
+    : {
         projectId: 'alpaca-salon',
         keyFilename: './src/express/alpaca-salon-8482a52cd70c.json',
-      }).bucket(bucketName)
+      }
+).bucket(bucketName)
 
 function uploadFileToGoogleCloudStorage(file: Express.Multer.File) {
   return new Promise((resolve, reject) => {
-    const fileName = `${sha256(Date.now() + file.originalname)}.${file.mimetype.split('/')[1]}`
+    const fileName = `${Date.now() + sha128(file.originalname)}.${file.mimetype.split('/')[1]}`
     const blobStream = bucket.file(fileName).createWriteStream()
 
     blobStream.on('error', (err) => {

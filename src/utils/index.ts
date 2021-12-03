@@ -94,7 +94,9 @@ export function isEmptyObject(obj: any) {
   )
 }
 
-const hash = crypto.createHash('sha256')
+export function sha128(str: string) {
+  return crypto.createHash('sha1').update(str).digest('hex')
+}
 
 export function sha256(str: string) {
   return crypto.createHash('sha256').update(str).digest('hex')
