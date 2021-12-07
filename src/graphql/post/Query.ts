@@ -3,6 +3,7 @@ import { poolQuery } from '../../database/postgres'
 import { buildSelect } from '../../utils/sql'
 import { graphqlRelationMapping } from '../common/ORM'
 import { QueryResolvers } from '../generated/graphql'
+import { postORM } from './ORM'
 import famousPosts from './sql/famousPosts.sql'
 import post from './sql/post.sql'
 import posts from './sql/posts.sql'
@@ -29,7 +30,7 @@ export const Query: QueryResolvers<ApolloContext> = {
     }
 
     const { rows } = await poolQuery(sql, values)
-    return rows.map((row) => graphqlRelationMapping(row, 'post'))
+    return rows.map((row) => postORM(row))
   },
 
   searchPosts: async (_, { keywords }) => {
