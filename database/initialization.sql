@@ -56,7 +56,6 @@ CREATE TABLE post (
 CREATE TABLE question (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   title text NOT NULL,
   contents text NOT NULL
 );
