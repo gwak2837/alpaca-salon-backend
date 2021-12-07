@@ -1,0 +1,6 @@
+type Question {
+  id: ID!
+  creationTime: DateTime!
+  title: NonEmptyString!
+  contents: NonEmptyString!
+}

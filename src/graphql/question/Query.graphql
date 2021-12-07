@@ -1,0 +1,4 @@
+type Query {
+  "질문 목록"
+  questions: [Question!]
+}

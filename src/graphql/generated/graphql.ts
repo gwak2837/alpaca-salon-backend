@@ -175,6 +175,8 @@ export type Query = {
   post?: Maybe<Post>
   /** 글 목록 */
   posts?: Maybe<Array<Post>>
+  /** 질문 목록 */
+  questions?: Maybe<Array<Question>>
   /** 글 검색 */
   searchPosts?: Maybe<Array<Post>>
   /** 닉네임으로 사용자 검색 */
@@ -203,6 +205,14 @@ export type QuerySearchPostsArgs = {
 
 export type QueryUserByNicknameArgs = {
   nickname: Scalars['NonEmptyString']
+}
+
+export type Question = {
+  __typename?: 'Question'
+  contents: Scalars['NonEmptyString']
+  creationTime: Scalars['DateTime']
+  id: Scalars['ID']
+  title: Scalars['NonEmptyString']
 }
 
 export type User = {
@@ -347,6 +357,7 @@ export type ResolversTypes = {
   PostModificationInput: PostModificationInput
   Provider: Provider
   Query: ResolverTypeWrapper<{}>
+  Question: ResolverTypeWrapper<Question>
   String: ResolverTypeWrapper<Scalars['String']>
   URL: ResolverTypeWrapper<Scalars['URL']>
   UUID: ResolverTypeWrapper<Scalars['UUID']>
@@ -377,6 +388,7 @@ export type ResolversParentTypes = {
   PostCreationInput: PostCreationInput
   PostModificationInput: PostModificationInput
   Query: {}
+  Question: Question
   String: Scalars['String']
   URL: Scalars['URL']
   UUID: Scalars['UUID']
@@ -552,6 +564,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryPostsArgs, 'pagination'>
   >
+  questions?: Resolver<Maybe<Array<ResolversTypes['Question']>>, ParentType, ContextType>
   searchPosts?: Resolver<
     Maybe<Array<ResolversTypes['Post']>>,
     ParentType,
@@ -564,6 +577,17 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryUserByNicknameArgs, 'nickname'>
   >
+}
+
+export type QuestionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Question'] = ResolversParentTypes['Question']
+> = {
+  contents?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
+  creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  title?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }
 
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
@@ -618,6 +642,7 @@ export type Resolvers<ContextType = any> = {
   PositiveInt?: GraphQLScalarType
   Post?: PostResolvers<ContextType>
   Query?: QueryResolvers<ContextType>
+  Question?: QuestionResolvers<ContextType>
   URL?: GraphQLScalarType
   UUID?: GraphQLScalarType
   User?: UserResolvers<ContextType>

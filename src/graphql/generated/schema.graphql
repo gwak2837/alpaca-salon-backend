@@ -185,6 +185,11 @@ type Query {
   posts(pagination: Pagination!): [Post!]
 
   """
+  질문 목록
+  """
+  questions: [Question!]
+
+  """
   글 검색
   """
   searchPosts(keywords: [NonEmptyString!]!): [Post!]
@@ -193,6 +198,13 @@ type Query {
   닉네임으로 사용자 검색
   """
   userByNickname(nickname: NonEmptyString!): User
+}
+
+type Question {
+  contents: NonEmptyString!
+  creationTime: DateTime!
+  id: ID!
+  title: NonEmptyString!
 }
 
 scalar URL
