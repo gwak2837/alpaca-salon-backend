@@ -17,7 +17,7 @@ export async function poolQuery(sql: string, values?: unknown[]) {
     if (process.env.NODE_ENV === 'production') {
       console.error(error.message)
       console.error(sql, values)
-      throw new DatabaseQueryError('500 Database query error')
+      throw new DatabaseQueryError('Database query error')
     } else {
       throw new DatabaseQueryError(error)
     }

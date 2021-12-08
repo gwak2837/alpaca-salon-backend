@@ -1,3 +1,5 @@
+import { AuthenticationError } from 'apollo-server-errors'
+
 import type { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
 import { buildSelect } from '../../utils/sql'
@@ -14,7 +16,9 @@ import searchPosts from './sql/searchPosts.sql'
 // }
 
 export const Query: QueryResolvers<ApolloContext> = {
-  post: async (_, { id }) => {
+  post: async (_, { id }, { userId }) => {
+    if (!userId) throw new AuthenticationError('로그인 후 시도해주세요.')
+
     const { rows } = await poolQuery(post, [id])
     return graphqlRelationMapping(rows[0], 'post')
   },
