@@ -18,8 +18,3 @@ input UserModificationInput {
   birthday: NonEmptyString
   bio: String
 }
-
-type UserAuthentication {
-  nickname: NonEmptyString!
-  jwt: JWT!
-}

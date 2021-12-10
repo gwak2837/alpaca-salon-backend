@@ -227,11 +227,6 @@ type User {
   providers: [Provider!]!
 }
 
-type UserAuthentication {
-  jwt: JWT!
-  nickname: NonEmptyString!
-}
-
 input UserModificationInput {
   ageRange: NonEmptyString
   bio: String

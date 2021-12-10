@@ -11,7 +11,9 @@ pool
       ).toLocaleString()}`
     )
   )
-  .catch((error) => console.error('PostgreSQL 서버에 접속할 수 없습니다. ' + error))
+  .catch((error) => {
+    throw new Error('PostgreSQL 서버에 접속할 수 없습니다. ' + error)
+  })
 
 startApolloServer()
   .then((url) => console.log(`🚀 Server ready at ${url}`))

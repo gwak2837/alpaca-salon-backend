@@ -232,12 +232,6 @@ export type User = {
   providers: Array<Provider>
 }
 
-export type UserAuthentication = {
-  __typename?: 'UserAuthentication'
-  jwt: Scalars['JWT']
-  nickname: Scalars['NonEmptyString']
-}
-
 export type UserModificationInput = {
   ageRange?: InputMaybe<Scalars['NonEmptyString']>
   bio?: InputMaybe<Scalars['String']>
@@ -362,7 +356,6 @@ export type ResolversTypes = {
   URL: ResolverTypeWrapper<Scalars['URL']>
   UUID: ResolverTypeWrapper<Scalars['UUID']>
   User: ResolverTypeWrapper<User>
-  UserAuthentication: ResolverTypeWrapper<UserAuthentication>
   UserModificationInput: UserModificationInput
 }
 
@@ -393,7 +386,6 @@ export type ResolversParentTypes = {
   URL: Scalars['URL']
   UUID: Scalars['UUID']
   User: User
-  UserAuthentication: UserAuthentication
   UserModificationInput: UserModificationInput
 }
 
@@ -618,15 +610,6 @@ export type UserResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }
 
-export type UserAuthenticationResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['UserAuthentication'] = ResolversParentTypes['UserAuthentication']
-> = {
-  jwt?: Resolver<ResolversTypes['JWT'], ParentType, ContextType>
-  nickname?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
-}
-
 export type Resolvers<ContextType = any> = {
   Comment?: CommentResolvers<ContextType>
   Date?: GraphQLScalarType
@@ -646,5 +629,4 @@ export type Resolvers<ContextType = any> = {
   URL?: GraphQLScalarType
   UUID?: GraphQLScalarType
   User?: UserResolvers<ContextType>
-  UserAuthentication?: UserAuthenticationResolvers<ContextType>
 }
