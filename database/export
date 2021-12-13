@@ -11,7 +11,7 @@ export $(grep -v '^#' $ENV_FILE_PATH | xargs)
 if [[ $ENV_FILE_PATH == ".env" ]]; then
   FOLDER='prod'
 else
-  FOLDER='dev'
+  FOLDER='local'
 fi
 
 if [[ $CONNECTION_STRING =~ "@localhost" ]]; then

@@ -17,7 +17,7 @@ fi
 if [[ $ENV_FILE_PATH == ".env" ]]; then
   FOLDER='prod'
 else
-  FOLDER='dev'
+  FOLDER='local'
 fi
 
 echo $CONNECTION_STRING_WITH_SSL

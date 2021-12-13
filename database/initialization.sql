@@ -267,6 +267,9 @@ WHERE id = delete_comment.comment_id
   AND "comment".user_id = delete_comment.user_id
 RETURNING id INTO deleted_comment_id;
 
+DELETE FROM user_x_liked_comment
+WHERE user_x_liked_comment.comment_id = delete_comment.comment_id;
+
 END $$;
 
 CREATE FUNCTION toggle_liking_comment (
