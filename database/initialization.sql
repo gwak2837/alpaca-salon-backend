@@ -106,15 +106,16 @@ CREATE TABLE event (
 
 CREATE TABLE "comment" (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  contents text NOT NULL,
+  creation_time timestamptz DEFAULT CURRENT_TIMESTAMP,
+  modification_time timestamptz DEFAULT CURRENT_TIMESTAMP,
+  contents text,
+  image_urls text [],
   --
-  post_id bigint NOT NULL REFERENCES post ON DELETE
+  comment_id bigint REFERENCES "comment" ON DELETE
   SET NULL,
-    user_id uuid NOT NULL REFERENCES "user" ON DELETE
+    post_id bigint REFERENCES post ON DELETE
   SET NULL,
-    comment_id bigint REFERENCES "comment" ON DELETE
+    user_id uuid REFERENCES "user" ON DELETE
   SET NULL
 );
 
@@ -182,15 +183,16 @@ CREATE TABLE deleted.post (
 );
 
 CREATE TABLE deleted.comment (
-  id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  creation_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  modification_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  contents text [] NOT NULL,
-  image_url text,
+  id bigint PRIMARY KEY,
+  creation_time timestamptz NOT NULL,
+  modification_time timestamptz NOT NULL,
+  deletion_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  contents text NOT NULL,
+  image_urls text [],
   --
-  comment_id bigint REFERENCES deleted.comment ON DELETE CASCADE,
-  post_id bigint NOT NULL REFERENCES deleted.post ON DELETE CASCADE,
-  user_id uuid NOT NULL REFERENCES deleted.user ON DELETE CASCADE
+  comment_id bigint,
+  post_id bigint,
+  user_id uuid
 );
 
 CREATE TABLE deleted.hashtag (
@@ -215,7 +217,7 @@ CREATE TABLE deleted.event (
   user_id uuid NOT NULL REFERENCES "user" ON DELETE CASCADE
 );
 
-CREATE FUNCTION delete_user (user_id uuid, out deleted_user_id uuid) LANGUAGE plpgsql AS $$ BEGIN
+CREATE FUNCTION delete_user () RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN
 INSERT INTO deleted.user(
     id,
     creation_time,
@@ -229,23 +231,41 @@ INSERT INTO deleted.user(
     naver_oauth,
     kakao_oauth
   )
-SELECT id,
-  creation_time,
-  modification_time,
-  email,
-  phone_number,
-  gender,
-  birthyear,
-  birthday,
-  google_oauth,
-  naver_oauth,
-  kakao_oauth
-FROM "user"
-WHERE id = user_id;
+VALUES((OLD).*);
 
-DELETE FROM "user"
-WHERE id = user_id
-RETURNING id INTO deleted_user_id;
+RETURN OLD;
+
+END $$;
+
+CREATE TRIGGER delete_user BEFORE DELETE ON "user" FOR EACH ROW EXECUTE FUNCTION delete_user();
+
+CREATE FUNCTION delete_comment (
+  comment_id bigint,
+  user_id uuid,
+  out deleted_comment_id bigint
+) LANGUAGE plpgsql AS $$ BEGIN
+INSERT INTO deleted.comment (
+    id,
+    creation_time,
+    modification_time,
+    contents,
+    image_urls,
+    comment_id,
+    post_id,
+    user_id
+  )
+SELECT *
+FROM "comment"
+WHERE id = delete_comment.comment_id
+  AND "comment".user_id = delete_comment.user_id;
+
+UPDATE "comment"
+SET modification_time = CURRENT_TIMESTAMP,
+  contents = NULL,
+  image_urls = NULL
+WHERE id = delete_comment.comment_id
+  AND "comment".user_id = delete_comment.user_id
+RETURNING id INTO deleted_comment_id;
 
 END $$;
 
@@ -288,130 +308,6 @@ result = TRUE;
 RETURN;
 
 END IF;
-
-END $$;
-
--- result
--- 0: 사용자 등록 성공
--- 1: `unique_name`이 이미 존재
--- CREATE FUNCTION create_user (
---   unique_name varchar(50),
---   nickname varchar(50),
---   password_hash text,
---   name varchar(50) DEFAULT NULL,
---   email varchar(50) DEFAULT NULL,
---   phone varchar(20) DEFAULT NULL,
---   birth date DEFAULT NULL,
---   bio varchar(50) DEFAULT NULL,
---   image_url text DEFAULT NULL,
---   google_oauth text DEFAULT NULL,
---   naver_oauth text DEFAULT NULL,
---   kakao_oauth text DEFAULT NULL,
---   out result int,
---   out user_id uuid,
---   out user_unique_name varchar(50)
--- ) LANGUAGE plpgsql AS $$ BEGIN PERFORM
--- FROM "user"
--- WHERE "user".unique_name = create_user.unique_name
---   OR "user".email = create_user.email;
--- IF found THEN result = 1;
--- RETURN;
--- END IF;
--- INSERT INTO "user" (
---     unique_name,
---     nickname,
---     password_hash,
---     name,
---     email,
---     phone,
---     birth,
---     bio,
---     image_url,
---     google_oauth,
---     naver_oauth,
---     kakao_oauth
---   )
--- VALUES (
---     unique_name,
---     nickname,
---     password_hash,
---     name,
---     email,
---     phone,
---     birth,
---     bio,
---     image_url,
---     google_oauth,
---     naver_oauth,
---     kakao_oauth
---   )
--- RETURNING "user".id,
---   "user".unique_name INTO user_id,
---   user_unique_name;
--- result = 0;
--- RETURN;
--- END $$;
--- CREATE FUNCTION create_post (
---   title varchar(100),
---   contents text,
---   user_id uuid,
---   out post_id bigint
--- ) LANGUAGE plpgsql AS $$ BEGIN
--- INSERT INTO post (title, contents, user_id)
--- VALUES (title, contents, user_id)
--- RETURNING post.id INTO post_id;
--- END $$;
-CREATE FUNCTION create_event (
-  title varchar(100),
-  category int,
-  location text,
-  image_url text,
-  event_url text,
-  contents text,
-  user_id uuid,
-  is_available boolean DEFAULT false,
-  date text DEFAULT NULL,
-  price int DEFAULT NULL,
-  out post_id bigint
-) LANGUAGE plpgsql AS $$ BEGIN
-INSERT INTO post (
-    title,
-    category,
-    location,
-    image_url,
-    event_url,
-    contents,
-    user_id,
-    is_available,
-    date,
-    price
-  )
-VALUES (
-    title,
-    category,
-    location,
-    image_url,
-    event_url,
-    contents,
-    user_id,
-    is_available,
-    date,
-    price
-  )
-RETURNING post.id INTO post_id;
-
-END $$;
-
-CREATE FUNCTION create_comment (
-  contents text,
-  post_id bigint,
-  user_id uuid,
-  parent_comment_id bigint DEFAULT NULL,
-  out comment_id bigint
-) LANGUAGE plpgsql AS $$ BEGIN
-INSERT INTO "comment" (contents, comment_id, post_id, user_id)
-VALUES (contents, parent_comment_id, post_id, user_id)
-RETURNING "comment".id INTO comment_id;
 
 END $$;
 
