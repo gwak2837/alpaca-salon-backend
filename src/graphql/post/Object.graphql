@@ -15,7 +15,7 @@ type Post {
   isLiked: Boolean!
 
   "글쓴이"
-  user: User!
+  user: User
 }
 
 enum PostCategory {

@@ -12,6 +12,7 @@ export const Query: QueryResolvers<ApolloContext> = {
 
     const { rows } = await poolQuery(commentsByPost, [postId, userId])
 
+    console.log('👀 - commentORM(rows)', commentORM(rows))
     return commentORM(rows)
   },
 }

@@ -1,9 +1,9 @@
 type Comment {
   id: ID!
-  creationTime: DateTime!
-  modificationTime: DateTime!
-  contents: NonEmptyString!
-  imageUrl: URL
+  creationTime: DateTime
+  modificationTime: DateTime
+  contents: NonEmptyString
+  imageUrls: [URL!]
   isLiked: Boolean!
   isModified: Boolean!
   likedCount: NonNegativeInt!
@@ -16,8 +16,8 @@ type Comment {
   subcomments: [Comment!]
 
   "이 댓글이 달린 피드"
-  post: Post!
+  post: Post
 
   "댓글을 작성한 사용자"
-  user: User!
+  user: User
 }

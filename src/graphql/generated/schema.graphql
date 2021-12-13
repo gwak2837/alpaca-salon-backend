@@ -1,12 +1,12 @@
 type Comment {
-  contents: NonEmptyString!
-  creationTime: DateTime!
+  contents: NonEmptyString
+  creationTime: DateTime
   id: ID!
-  imageUrl: URL
+  imageUrls: [URL!]
   isLiked: Boolean!
   isModified: Boolean!
   likedCount: NonNegativeInt!
-  modificationTime: DateTime!
+  modificationTime: DateTime
 
   """
   이 댓글의 상위 댓글
@@ -16,7 +16,7 @@ type Comment {
   """
   이 댓글이 달린 피드
   """
-  post: Post!
+  post: Post
 
   """
   대댓글
@@ -26,7 +26,7 @@ type Comment {
   """
   댓글을 작성한 사용자
   """
-  user: User!
+  user: User
 }
 
 scalar Date
@@ -53,6 +53,7 @@ scalar Longitude
 type Mutation {
   createComment(commentId: ID, contents: NonEmptyString!, postId: ID!): Comment
   createPost(input: PostCreationInput!): Post
+  deleteComment(id: ID!): Comment
   deletePost(id: ID!): Post
 
   """
@@ -112,7 +113,7 @@ type Post {
   """
   글쓴이
   """
-  user: User!
+  user: User
 }
 
 enum PostCategory {

@@ -31,22 +31,22 @@ export type Scalars = {
 
 export type Comment = {
   __typename?: 'Comment'
-  contents: Scalars['NonEmptyString']
-  creationTime: Scalars['DateTime']
+  contents?: Maybe<Scalars['NonEmptyString']>
+  creationTime?: Maybe<Scalars['DateTime']>
   id: Scalars['ID']
-  imageUrl?: Maybe<Scalars['URL']>
+  imageUrls?: Maybe<Array<Scalars['URL']>>
   isLiked: Scalars['Boolean']
   isModified: Scalars['Boolean']
   likedCount: Scalars['NonNegativeInt']
-  modificationTime: Scalars['DateTime']
+  modificationTime?: Maybe<Scalars['DateTime']>
   /** 이 댓글의 상위 댓글 */
   parentComment?: Maybe<Comment>
   /** 이 댓글이 달린 피드 */
-  post: Post
+  post?: Maybe<Post>
   /** 대댓글 */
   subcomments?: Maybe<Array<Comment>>
   /** 댓글을 작성한 사용자 */
-  user: User
+  user?: Maybe<User>
 }
 
 export enum Gender {
@@ -60,6 +60,7 @@ export type Mutation = {
   __typename?: 'Mutation'
   createComment?: Maybe<Comment>
   createPost?: Maybe<Post>
+  deleteComment?: Maybe<Comment>
   deletePost?: Maybe<Post>
   /** JWT 인증 토큰과 같이 요청하면 로그아웃 성공 여부를 반환함 */
   logout: Scalars['Boolean']
@@ -79,6 +80,10 @@ export type MutationCreateCommentArgs = {
 
 export type MutationCreatePostArgs = {
   input: PostCreationInput
+}
+
+export type MutationDeleteCommentArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationDeletePostArgs = {
@@ -128,7 +133,7 @@ export type Post = {
   modificationTime: Scalars['DateTime']
   title: Scalars['NonEmptyString']
   /** 글쓴이 */
-  user: User
+  user?: Maybe<User>
 }
 
 export enum PostCategory {
@@ -393,18 +398,18 @@ export type CommentResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']
 > = {
-  contents?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
-  creationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
+  contents?: Resolver<Maybe<ResolversTypes['NonEmptyString']>, ParentType, ContextType>
+  creationTime?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  imageUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>
+  imageUrls?: Resolver<Maybe<Array<ResolversTypes['URL']>>, ParentType, ContextType>
   isLiked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   isModified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   likedCount?: Resolver<ResolversTypes['NonNegativeInt'], ParentType, ContextType>
-  modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
+  modificationTime?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>
   parentComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>
-  post?: Resolver<ResolversTypes['Post'], ParentType, ContextType>
+  post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>
   subcomments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }
 
@@ -456,6 +461,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationCreatePostArgs, 'input'>
+  >
+  deleteComment?: Resolver<
+    Maybe<ResolversTypes['Comment']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteCommentArgs, 'id'>
   >
   deletePost?: Resolver<
     Maybe<ResolversTypes['Post']>,
@@ -520,7 +531,7 @@ export type PostResolvers<
   isLiked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   modificationTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>
   title?: Resolver<ResolversTypes['NonEmptyString'], ParentType, ContextType>
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }
 

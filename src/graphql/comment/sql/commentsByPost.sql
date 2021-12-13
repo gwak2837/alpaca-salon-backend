@@ -17,7 +17,7 @@ SELECT "comment".id,
   subcomment_user.nickname AS subcomments__user__nickname,
   subcomment_user.image_url AS subcomments__user__image_url
 FROM "comment"
-  JOIN "user" ON "user".id = "comment".user_id
+  LEFT JOIN "user" ON "user".id = "comment".user_id
   LEFT JOIN user_x_liked_comment ON user_x_liked_comment.comment_id = "comment".id
   LEFT JOIN user_x_liked_comment AS is_liked ON is_liked.comment_id = "comment".id
   AND is_liked.user_id = $2

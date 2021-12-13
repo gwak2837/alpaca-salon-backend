@@ -1,10 +1,12 @@
 import { AuthenticationError, UserInputError } from 'apollo-server-errors'
+import { QueryArrayResult } from 'pg'
 
 import type { ApolloContext } from '../../apollo/server'
 import { poolQuery } from '../../database/postgres'
 import { Comment, MutationResolvers } from '../generated/graphql'
 import checkCommentInPost from './sql/checkCommentInPost.sql'
 import createComment from './sql/createComment.sql'
+import deleteComment from './sql/deleteComment.sql'
 import toggleLikingComment from './sql/toggleLikingComment.sql'
 
 export const Mutation: MutationResolvers<ApolloContext> = {
@@ -29,6 +31,14 @@ export const Mutation: MutationResolvers<ApolloContext> = {
 
     const { rows } = await poolQuery(createComment, [contents, postId, userId, commentId])
 
-    return rows[0]
+    return { id: rows[0].id } as Comment
+  },
+
+  deleteComment: async (_, { id }, { userId }) => {
+    if (!userId) throw new AuthenticationError('로그인 후 시도해주세요.')
+
+    const results = await poolQuery(deleteComment, [id, userId])
+
+    return { id: results.rows[0].deleted_comment_id } as Comment
   },
 }

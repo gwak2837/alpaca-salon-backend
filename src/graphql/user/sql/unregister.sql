@@ -1,2 +1,3 @@
-SELECT deleted_user_id AS id
-FROM delete_user($1)
+DELETE FROM "user"
+WHERE id = $1
+RETURNING id;
