@@ -33,8 +33,8 @@ $ docker-compose --version
 ### Download codes
 
 ```bash
-$ git clone https://github.com/rmfpdlxmtidl/alpaca-salon-backend.git
-$ cd alpaca-salon-backend
+$ git clone https://github.com/rmfpdlxmtidl/alpacasalon-backend.git
+$ cd alpacasalon-backend
 $ git checkout main
 $ yarn
 ```
@@ -45,26 +45,7 @@ $ yarn
 
 ### Create environment variables
 
-```
-PORT=4000
-
-CONNECTION_STRING=postgresql://DB계정이름:DB계정암호@DB서버주소:포트/DB이름
-
-JWT_SECRET_KEY=임의의문자열
-
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-
-KAKAO_REST_API_KEY=
-KAKAO_ADMIN_KEY=
-
-FRONTEND_URL=
-
-# for `yarn generate-db`
-POSTGRES_DB=DB이름
-```
-
-루트 폴더에 `.env`, `.env.development`, `.env.test` 파일을 생성하고 프로젝트에서 사용되는 환경 변수를 설정합니다.
+루트 폴더에 `.env`, `.env.development`, `.env.local`, `.env.test` 파일을 생성하고 프로젝트에서 사용되는 환경 변수를 설정합니다.
 
 ### Initialize database
 
@@ -98,25 +79,29 @@ $ docker-compose up --detach --build --force-recreate
 
 (Cloud Run 환경과 동일한) Docker 환경에서 Node.js 서버를 실행합니다.
 
-## Cloud
+## Google Cloud Platform
 
-### GCP Cloud Run
+### Cloud Run
 
-Cloud Run이 GitHub 저장소 변경 사항을 자동으로 감지하기 때문에 GitHub로 commit을 push할 때마다 Cloud Run에 자동으로 배포됩니다.
+Cloud Run + Cloud Build를 통해 GitHub에 commit이 push될 때마다 Cloud Run에 자동으로 배포합니다.
 
-### GCP Cloud SQL
+### Cloud SQL (For production database)
 
 #### Configure database
 
 ```sql
-CREATE DATABASE alpaca_salon OWNER alpaca_salon TEMPLATE template0 LC_COLLATE "C" LC_CTYPE "ko_KR.UTF-8";
-\c alpaca_salon postgres
-ALTER SCHEMA public OWNER TO alpaca_salon;
+CREATE DATABASE alpacasalon OWNER alpacasalon TEMPLATE template0 LC_COLLATE "C" LC_CTYPE "ko_KR.UTF-8";
+\c alpacasalon postgres
+ALTER SCHEMA public OWNER TO alpacasalon;
+DROP DATABASE postgres;
 ```
 
 #### Connect to Cloud SQL with proxy
 
 ```
+PROJECT_NAME=프로젝트ID
+CONNECTION_NAME=$PROJECT_NAME:리전:인스턴스ID
+
 gcloud auth login
 gcloud config set project $PROJECT_NAME
 
@@ -136,7 +121,107 @@ CSV 데이터 구조 수정
 yarn import-db .env
 ```
 
-### GCP Cloud Function
+### Compute Engine (For development database)
+
+#### Connect to Compute Engine via SSH
+
+```bash
+GCP_ID=GCP계정이름
+GCE_ID=GCE인스턴스이름
+
+gcloud init
+gcloud components update
+gcloud compute ssh $GCP_ID@$GCE_ID
+```
+
+#### Run PostgreSQL container
+
+```bash
+# Set variables
+DOCKER_VOLUME_NAME=도커볼륨이름
+POSTGRES_HOST=DB서버주소
+POSTGRES_USER=DB계정이름
+POSTGRES_PASSWORD=DB계정암호
+POSTGRES_DB=DB이름
+
+# generate the server.key and server.crt https://www.postgresql.org/docs/14/ssl-tcp.html
+openssl req -new -nodes -text -out root.csr \
+  -keyout root.key -subj "/CN=Alpacasalon"
+chmod og-rwx root.key
+
+openssl x509 -req -in root.csr -text -days 3650 \
+  -extfile /etc/ssl/openssl.cnf -extensions v3_ca \
+  -signkey root.key -out root.crt
+
+openssl req -new -nodes -text -out server.csr \
+  -keyout server.key -subj "/CN=$POSTGRES_HOST"
+
+openssl x509 -req -in server.csr -text -days 365 \
+  -CA root.crt -CAkey root.key -CAcreateserial \
+  -out server.crt
+
+# set postgres (alpine) user as owner of the server.key and permissions to 600
+sudo chown 0:70 server.key
+sudo chmod 640 server.key
+
+# set client connection policy
+echo "
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# 'local' is for Unix domain socket connections only
+local   all             all                                     trust
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            trust
+# IPv6 local connections:
+host    all             all             ::1/128                 trust
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+local   replication     all                                     trust
+host    replication     all             127.0.0.1/32            trust
+host    replication     all             ::1/128                 trust
+
+hostssl all all all scram-sha-256
+" > pg_hba.conf
+
+# start a postgres docker container, mapping the .key and .crt into the image.
+sudo docker volume create $DOCKER_VOLUME_NAME
+sudo docker run \
+  -d \
+  -e POSTGRES_USER=$POSTGRES_USER \
+  -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+  -e POSTGRES_DB=$POSTGRES_DB \
+  -e LANG=ko_KR.UTF8 \
+  -e LC_COLLATE=C \
+  -e POSTGRES_INITDB_ARGS=--data-checksums \
+  --name postgres \
+  -p 5432:5432 \
+  --restart=always \
+  --shm-size=256MB \
+  -v "$PWD/server.crt:/var/lib/postgresql/server.crt:ro" \
+  -v "$PWD/server.key:/var/lib/postgresql/server.key:ro" \
+  -v "$PWD/pg_hba.conf:/var/lib/postgresql/pg_hba.conf" \
+  -v $DOCKER_VOLUME_NAME:/var/lib/postgresql/data \
+  postgres:14-alpine \
+  -c ssl=on \
+  -c ssl_cert_file=/var/lib/postgresql/server.crt \
+  -c ssl_key_file=/var/lib/postgresql/server.key \
+  -c hba_file=/var/lib/postgresql/pg_hba.conf
+```
+
+도커를 통해 PostgreSQL 컨테이너와 도커 볼륨을 생성하고, OpenSSL을 이용해 자체 서명된 인증서를 생성해서 SSL 연결을 활성화합니다.
+
+#### Test connection
+
+```bash
+# Set variables
+POSTGRES_HOST=DB서버주소
+POSTGRES_USER=DB계정이름
+POSTGRES_DB=DB이름
+
+psql "host=$POSTGRES_HOST port=5432 dbname=$POSTGRES_DB user=$POSTGRES_USER sslmode=verify-ca"
+```
+
+### Cloud Function
 
 #### Slack
 

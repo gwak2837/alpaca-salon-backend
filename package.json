@@ -13,9 +13,9 @@
   "repository": "https://github.com/rmfpdlxmtidl/alpaca-salon-backend.git",
   "scripts": {
     "clean": "rm -rf .yarn/cache .yarn/unplugged .yarn/install-state.gz coverage dist .pnp.cjs yarn.lock",
-    "dev": "NODE_ENV=development concurrently \"webpack\" \"nodemon -r dotenv/config dist/index.js dotenv_config_path=.env.development --trace-warnings\"",
+    "dev": "NODE_ENV=development concurrently \"webpack\" \"nodemon -r dotenv/config dist/index.js dotenv_config_path=.env.development.local --trace-warnings\"",
     "build": "yarn generate && NODE_ENV=production webpack",
-    "start": "NODE_ENV=production node -r dotenv/config dist/index.js",
+    "start": "NODE_ENV=production node -r dotenv/config dist/index.js dotenv_config_path=.env.local",
     "test": "NODE_ENV=test jest",
     "format": "prettier . --write --ignore-path .gitignore",
     "lint": "eslint . --fix --ignore-path .gitignore",
