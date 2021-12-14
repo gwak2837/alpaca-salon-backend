@@ -23,8 +23,8 @@
     "pre-push": "yarn generate && yarn format && yarn type",
     "generate": "rm -rf src/graphql/generated && graphql-codegen --config codegen.yml",
     "generate-db": "database/generate",
-    "export-db": "database/export",
-    "import-db": "database/import",
+    "export": "database/export",
+    "import": "database/import",
     "postinstall": "[ -d '.husky' ] && husky install || true"
   },
   "dependencies": {

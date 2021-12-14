@@ -90,10 +90,11 @@ Cloud Run + Cloud Build를 통해 GitHub에 commit이 push될 때마다 Cloud Ru
 #### Configure database
 
 ```sql
+CREATE USER alpacasalon CREATEDB;
+-- \c postgres alpacasalon
 CREATE DATABASE alpacasalon OWNER alpacasalon TEMPLATE template0 LC_COLLATE "C" LC_CTYPE "ko_KR.UTF-8";
-\c alpacasalon postgres
-ALTER SCHEMA public OWNER TO alpacasalon;
-DROP DATABASE postgres;
+-- \c alpacasalon postgres
+-- ALTER SCHEMA public OWNER TO alpacasalon;
 ```
 
 #### Connect to Cloud SQL with proxy
