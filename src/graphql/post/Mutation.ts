@@ -31,8 +31,8 @@ export const Mutation: MutationResolvers<ApolloContext> = {
       input.category,
       input.title,
       input.contents,
-      input.id,
       input.imageUrls,
+      input.id,
       userId,
     ])
     if (rowCount === 0)
