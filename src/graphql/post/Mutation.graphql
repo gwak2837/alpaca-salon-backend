@@ -18,4 +18,5 @@ input PostModificationInput {
   category: PostCategory
   title: String
   contents: String
+  imageUrls: [URL!]
 }

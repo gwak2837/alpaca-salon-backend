@@ -133,6 +133,7 @@ input PostModificationInput {
   category: PostCategory
   contents: String
   id: ID!
+  imageUrls: [URL!]
   title: String
 }
 
