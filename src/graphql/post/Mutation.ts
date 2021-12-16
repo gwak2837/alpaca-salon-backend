@@ -31,7 +31,7 @@ export const Mutation: MutationResolvers<ApolloContext> = {
       input.category,
       input.title,
       input.contents,
-      input.imageUrls,
+      input.imageUrls?.map((imageUrl) => imageUrl.href),
       input.id,
       userId,
     ])
