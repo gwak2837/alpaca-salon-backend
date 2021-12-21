@@ -11,12 +11,21 @@ SET modification_time = CURRENT_TIMESTAMP,
   contents = CASE
     WHEN $3 IS NULL THEN contents
     ELSE $3
+  END,
+  image_urls = CASE
+    WHEN $4 IS NULL THEN image_urls
+    ELSE $4
   END
-WHERE id = $4
-  AND user_id = $5
+WHERE id = $5
+  AND user_id = $6
   AND (
     category <> $1
     OR title <> $2
     OR contents <> $3
+    OR image_urls <> $4
   )
-RETURNING *
+RETURNING id,
+  category,
+  title,
+  contents,
+  image_urls

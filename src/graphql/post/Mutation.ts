@@ -31,10 +31,14 @@ export const Mutation: MutationResolvers<ApolloContext> = {
       input.category,
       input.title,
       input.contents,
+      input.imageUrls?.map((imageUrl) => imageUrl.href),
       input.id,
       userId,
     ])
-    if (rowCount === 0) return null
+    if (rowCount === 0)
+      throw new UserInputError(
+        `id:${input.id} 의 게시글이 존재하지 않거나, 해당 게시글의 작성자가 아닙니다.`
+      )
 
     return graphqlRelationMapping(rows[0], 'post')
   },

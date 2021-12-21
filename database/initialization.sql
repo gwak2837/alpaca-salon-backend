@@ -1,20 +1,20 @@
 -- public 스키마 삭제 후 생성
 DROP SCHEMA IF EXISTS public CASCADE;
 
-CREATE SCHEMA public AUTHORIZATION alpaca_salon;
+CREATE SCHEMA public AUTHORIZATION alpacasalon;
 
 COMMENT ON SCHEMA public IS 'standard public schema';
 
-GRANT ALL ON SCHEMA public TO alpaca_salon;
+GRANT ALL ON SCHEMA public TO alpacasalon;
 
 -- deleted 스키마 삭제 후 생성
 DROP SCHEMA IF EXISTS deleted CASCADE;
 
-CREATE SCHEMA deleted AUTHORIZATION alpaca_salon;
+CREATE SCHEMA deleted AUTHORIZATION alpacasalon;
 
 COMMENT ON SCHEMA deleted IS 'deleted records history';
 
-GRANT ALL ON SCHEMA deleted TO alpaca_salon;
+GRANT ALL ON SCHEMA deleted TO alpacasalon;
 
 -- validation_time 이전 JWT 토큰은 유효하지 않음
 -- gender

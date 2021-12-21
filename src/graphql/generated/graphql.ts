@@ -153,6 +153,7 @@ export type PostModificationInput = {
   category?: InputMaybe<PostCategory>
   contents?: InputMaybe<Scalars['String']>
   id: Scalars['ID']
+  imageUrls?: InputMaybe<Array<Scalars['URL']>>
   title?: InputMaybe<Scalars['String']>
 }
 
